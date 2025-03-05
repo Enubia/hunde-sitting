@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.react.json",
+  "compilerOptions": {
+    "paths": {
+      "@components/*": [
+        "./src/components/*"
+      ]
+    },
+    "allowJs": true
+  },
+  "include": [
+    "../../next-env.d.ts",
+    "../../**/*.ts",
+    "../../**/*.tsx",
+    "../../.next/types/**/*.ts",
+    ".next/types/**/*.ts"
+  ]
+}

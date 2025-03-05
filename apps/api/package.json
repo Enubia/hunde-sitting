@@ -1,0 +1,31 @@
+{
+    "name": "@hunde-sitting/api",
+    "type": "module",
+    "version": "1.0.0",
+    "exports": {
+        "./routes": "./src/routes/index.ts"
+    },
+    "scripts": {
+        "build": "rm -rf dist && tsc && tsc-alias",
+        "dev": "tsx watch src/index.ts",
+        "typecheck": "tsc --noEmit",
+        "start": "node dist/index.js",
+        "lint": "eslint ."
+    },
+    "dependencies": {
+        "@auth/core": "0.38.0",
+        "@hono/node-server": "1.13.8",
+        "@hono/zod-openapi": "0.19.2",
+        "@scalar/hono-api-reference": "0.5.180",
+        "hono": "4.7.4",
+        "stoker": "1.4.2",
+        "zod": "3.24.2"
+    },
+    "devDependencies": {
+        "@hunde-sitting/eslint-config": "workspace:^",
+        "@types/node": "22.13.9",
+        "tsc-alias": "1.8.11",
+        "tsx": "4.19.3",
+        "typescript": "5.8.2"
+    }
+}

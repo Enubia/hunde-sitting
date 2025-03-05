@@ -1,0 +1,23 @@
+{
+    "name": "@hunde-sitting/api-client",
+    "type": "module",
+    "version": "1.0.0",
+    "main": "./dist/index.js",
+    "scripts": {
+        "dev": "tsx watch src/index.ts",
+        "build": "rm -rf dist && tsc",
+        "lint": "eslint .",
+        "lint:fix": "npm run lint --fix",
+        "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@hunde-sitting/api": "workspace:^",
+        "hono": "4.7.4"
+    },
+    "devDependencies": {
+        "@hunde-sitting/eslint-config": "workspace:^",
+        "@types/node": "22.13.9",
+        "tsx": "4.19.3",
+        "typescript": "5.8.2"
+    }
+}
