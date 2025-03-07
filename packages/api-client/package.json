@@ -4,10 +4,10 @@
     "version": "1.0.0",
     "main": "./dist/index.js",
     "scripts": {
-        "dev": "tsx watch src/index.ts",
         "build": "rm -rf dist && tsc",
+        "clean": "rm -rf dist",
+        "dev": "tsx watch src/index.ts",
         "lint": "eslint .",
-        "lint:fix": "npm run lint --fix",
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {

@@ -10,6 +10,9 @@ importers:
 
   apps/admin:
     dependencies:
+      '@hunde-sitting/api-client':
+        specifier: workspace:^
+        version: link:../../packages/api-client
       next:
         specifier: 15.2.1
         version: 15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -69,6 +72,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@hunde-sitting/api-client':
+        specifier: workspace:^
+        version: link:../../packages/api-client
       next:
         specifier: 15.2.1
         version: 15.2.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
