@@ -1,11 +1,9 @@
-import { OpenAPIHono } from '@hono/zod-openapi';
-import { defaultHook } from 'stoker/openapi';
+import { Hono } from 'hono';
 
 import type { AppEnv } from './types.js';
 
 export default function createRouter() {
-    return new OpenAPIHono<AppEnv>({
+    return new Hono<AppEnv>({
         strict: false,
-        defaultHook,
     });
 }

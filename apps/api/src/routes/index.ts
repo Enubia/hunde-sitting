@@ -1,17 +1,18 @@
-import type { AppOpenAPI } from '../lib/types.js';
+import type { Hono } from 'hono';
 
-import { BASE_PATH } from '../lib/constants.js';
-import createRouter from '../lib/create-router.js';
+import type { AppEnv } from '../lib/types.js';
+
+import createApp from '../lib/create-app.js';
 import index from './index.route.js';
 
-export function registerRoutes(app: AppOpenAPI) {
+export function registerRoutes(app: Hono<AppEnv>) {
     return app
         .route('/', index);
 }
 
 // stand alone router type used for api client
 export const router = registerRoutes(
-    createRouter().basePath(BASE_PATH),
+    createApp(),
 );
 // eslint-disable-next-line ts/no-redeclare
 export type router = typeof router;

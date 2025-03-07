@@ -13,10 +13,7 @@
         "lint": "eslint ."
     },
     "dependencies": {
-        "@auth/core": "0.38.0",
         "@hono/node-server": "1.13.8",
-        "@hono/zod-openapi": "0.19.2",
-        "@scalar/hono-api-reference": "0.5.180",
         "hono": "4.7.4",
         "stoker": "1.4.2",
         "zod": "3.24.2"
