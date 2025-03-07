@@ -3,8 +3,12 @@
     "compilerOptions": {
         "jsx": "react-jsx",
         "jsxImportSource": "hono/jsx",
+        "baseUrl": ".",
         "module": "NodeNext",
         "moduleResolution": "nodenext",
+        "paths": {
+            "#lib/*": ["./src/lib/*"]
+        },
         "resolveJsonModule": true,
         "outDir": "./dist",
         "allowSyntheticDefaultImports": true,

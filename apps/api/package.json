@@ -5,6 +5,9 @@
     "exports": {
         "./routes": "./src/routes/index.ts"
     },
+    "imports": {
+        "#lib": "./src/lib/*"
+    },
     "scripts": {
         "build": "rm -rf dist && tsc && tsc-alias",
         "clean": "rm -rf dist",
