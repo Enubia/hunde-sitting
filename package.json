@@ -8,7 +8,7 @@
         "dev": "turbo dev",
         "dev:apps": "turbo dev --filter={./apps/*}",
         "dev:api": "turbo dev --filter @hunde-sitting/api",
-        "dev:web": "turbo dev --filter @hunde-sitting/web",
+        "dev:web": "turbo dev --filter @hunde-sitting/web --filter @hunde-sitting/api",
         "dev:admin": "turbo dev --filter @hunde-sitting/admin --filter @hunde-sitting/api",
         "dev:frontend": "turbo dev --filter @hunde-sitting/web --filter @hunde-sitting/api",
         "lint": "turbo lint",

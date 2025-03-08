@@ -1,0 +1,4 @@
+@endpoint = http://localhost:3000
+
+GET {{endpoint}}
+Content-Type: application/json

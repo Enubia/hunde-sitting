@@ -25,6 +25,8 @@
     "devDependencies": {
         "@hunde-sitting/eslint-config": "workspace:*",
         "@types/node": "22.13.9",
+        "chalk": "5.4.1",
+        "dotenv": "16.4.7",
         "tsc-alias": "1.8.11",
         "tscw-config": "^1.1.2",
         "tsx": "4.19.3",
