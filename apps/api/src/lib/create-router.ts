@@ -2,8 +2,8 @@ import { Hono } from 'hono';
 
 import type { AppEnv } from './types.js';
 
-export default function createRouter() {
+export default function createRouter(strict = false) {
     return new Hono<AppEnv>({
-        strict: false,
+        strict,
     });
 }
