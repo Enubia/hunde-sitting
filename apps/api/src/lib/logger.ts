@@ -8,8 +8,8 @@ export default function logFunction(c: Context) {
         const id = c.get('requestId');
 
         c.set('log', {
-            debug: (...message: string[]) => console.log(chalk.blueBright(`[req-${id}]`, '[DEBUG]', ...message)),
-            info: (...message: string[]) => console.log(chalk.green(`[req-${id}]`, '[INFO]', ...message)),
+            debug: (...message: string[]) => console.log(chalk.green(`[req-${id}]`, '[DEBUG]', ...message)),
+            info: (...message: string[]) => console.log(chalk.white(`[req-${id}]`, '[INFO]', ...message)),
             warn: (...message: string[]) => console.log(chalk.yellow(`[req-${id}]`, '[WARNING]', ...message)),
             error: (...message: string[]) => console.log(chalk.red(`[req-${id}]`, '[ERROR]', ...message)),
             critical: (...message: string[]) => console.log(chalk.magenta(`[req-${id}]`, '[CRITICAL]', ...message)),

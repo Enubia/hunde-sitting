@@ -1,6 +1,6 @@
 import { logger } from 'hono/logger';
 import { requestId } from 'hono/request-id';
-import { notFound, onError } from 'stoker/middlewares';
+import { notFound, onError, serveEmojiFavicon } from 'stoker/middlewares';
 
 import createRouter from './create-router.js';
 import logFunction from './logger.js';
@@ -14,6 +14,7 @@ export default function createApp() {
         .use((c, next) => {
             return logger(logFunction(c))(c, next);
         })
+        .use(serveEmojiFavicon('🔥'))
         .use(
             '*',
             async (_c, next) => {
