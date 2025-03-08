@@ -1,8 +1,9 @@
 import type { Hono } from 'hono';
 
-import type { AppEnv } from '../lib/types.js';
+import type { AppEnv } from '#lib/types.js';
 
-import createApp from '../lib/create-app.js';
+import createApp from '#lib/create-app.js';
+
 import index from './index.route.js';
 
 export function registerRoutes(app: Hono<AppEnv>) {

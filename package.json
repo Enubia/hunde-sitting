@@ -3,11 +3,30 @@
     "version": "1.0.0",
     "packageManager": "pnpm@10.6.1+sha512.40ee09af407fa9fbb5fbfb8e1cb40fbb74c0af0c3e10e9224d7b53c7658528615b2c92450e74cfad91e3a2dcafe3ce4050d80bda71d757756d2ce2b66213e9a3",
     "scripts": {
-        "build": "pnpm run -r build",
-        "clean": "pnpm run -r clean",
-        "dev": "pnpm run -r --parallel --aggregate-output dev",
-        "lint": "pnpm run -r --parallel lint",
-        "test": "pnpm run -r --parallel test",
-        "typecheck": "pnpm run -r --parallel typecheck"
+        "build": "turbo build",
+        "clean": "turbo clean",
+        "dev": "turbo dev",
+        "dev:apps": "turbo dev --filter={./apps/*}",
+        "dev:api": "turbo dev --filter @hunde-sitting/api",
+        "dev:web": "turbo dev --filter @hunde-sitting/web",
+        "dev:admin": "turbo dev --filter @hunde-sitting/admin --filter @hunde-sitting/api",
+        "dev:frontend": "turbo dev --filter @hunde-sitting/web --filter @hunde-sitting/api",
+        "lint": "turbo lint",
+        "test": "turbo test",
+        "check-types": "turbo check-types",
+        "postinstall": "pnpm exec simple-git-hooks"
+    },
+    "devDependencies": {
+        "lint-staged": "15.4.3",
+        "simple-git-hooks": "2.11.1",
+        "turbo": "2.4.4"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": [
+            "simple-git-hooks"
+        ]
+    },
+    "simple-git-hooks": {
+        "pre-commit": "pnpm exec lint-staged"
     }
 }

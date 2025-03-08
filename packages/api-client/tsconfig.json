@@ -6,22 +6,15 @@
             "DOM",
             "DOM.Iterable"
         ],
-        "rootDir": "src",
-        "paths": {
-            "@api/*": [
-                "../../apps/api/src/*"
-            ]
-        },
         "declaration": true,
         "declarationMap": true,
         "outDir": "dist"
     },
-    "watchOptions": {
-        "excludeDirectories": [
-            "**/node_modules",
-            "**/packages/web"
-        ]
-    },
+    "references": [
+        {
+            "path": "../../apps/api/tsconfig.json"
+        }
+    ],
     "include": [
         "src"
     ]

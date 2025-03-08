@@ -3,18 +3,18 @@
     "type": "module",
     "version": "1.0.0",
     "exports": {
-        "./routes": "./src/routes/index.ts"
-    },
-    "imports": {
-        "#lib": "./src/lib/*"
+        "./routes": {
+            "types": "./src/routes/index.ts",
+            "default": "./dist/routes/index.js"
+        }
     },
     "scripts": {
-        "build": "rm -rf dist && tsc && tsc-alias",
-        "clean": "rm -rf dist",
+        "build": "tsc && tsc-alias",
+        "clean": "rm -rf dist && rm -rf .turbo",
         "dev": "tsx watch src/index.ts",
         "lint": "eslint .",
         "start": "node dist/index.js",
-        "typecheck": "tsc --noEmit"
+        "check-types": "tsc --noEmit"
     },
     "dependencies": {
         "@hono/node-server": "1.13.8",
@@ -23,9 +23,10 @@
         "zod": "3.24.2"
     },
     "devDependencies": {
-        "@hunde-sitting/eslint-config": "workspace:^",
+        "@hunde-sitting/eslint-config": "workspace:*",
         "@types/node": "22.13.9",
         "tsc-alias": "1.8.11",
+        "tscw-config": "^1.1.2",
         "tsx": "4.19.3",
         "typescript": "5.8.2"
     }

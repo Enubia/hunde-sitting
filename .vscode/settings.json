@@ -33,11 +33,16 @@
         "postcss"
     ],
 
+    "eslint.workingDirectories": [
+        { "pattern": "./apps/web" },
+        { "pattern": "./apps/admin" },
+        { "pattern": "./apps/api" },
+        { "pattern": "./packages/api-client" }
+    ],
+
     "search.exclude": {
-        "**/package.json": true,
         "**/*.md": true,
         "**/.gitignore": true,
-        "**/pnpm-lock.yaml": true,
-        "**/tsconfig.json": true
+        "**/pnpm-lock.yaml": true
     }
 }
