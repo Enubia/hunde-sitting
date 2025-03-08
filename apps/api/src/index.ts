@@ -12,3 +12,14 @@ serve({
     // eslint-disable-next-line no-console
     console.info(`Listening on http://localhost:${info.port}`);
 });
+
+// Gracefully shutdown in development
+// tsx causes to throw -> ELIFECYCLE Command failed with exit code 130.
+// eslint-disable-next-line node/no-process-env
+if (process.env.NODE_ENV !== 'production') {
+    process.on('SIGINT', () => {
+        // eslint-disable-next-line no-console
+        console.info('Shutting down');
+        process.exit(0);
+    });
+}
