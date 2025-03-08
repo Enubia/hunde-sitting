@@ -79,12 +79,6 @@ importers:
       '@antfu/eslint-config':
         specifier: 4.5.1
         version: 4.5.1(@eslint-react/eslint-plugin@1.30.2(eslint@9.21.0)(ts-api-utils@2.0.1(typescript@5.8.2))(typescript@5.8.2))(@typescript-eslint/utils@8.26.0(eslint@9.21.0)(typescript@5.8.2))(@vue/compiler-sfc@3.5.13)(eslint-plugin-format@1.0.1(eslint@9.21.0))(eslint-plugin-react-hooks@5.2.0(eslint@9.21.0))(eslint-plugin-react-refresh@0.4.19(eslint@9.21.0))(eslint@9.21.0)(typescript@5.8.2)
-      '@eslint-react/eslint-plugin':
-        specifier: 1.30.2
-        version: 1.30.2(eslint@9.21.0)(ts-api-utils@2.0.1(typescript@5.8.2))(typescript@5.8.2)
-      '@next/eslint-plugin-next':
-        specifier: 15.2.1
-        version: 15.2.1
       '@tanstack/eslint-plugin-query':
         specifier: 5.66.1
         version: 5.66.1(eslint@9.21.0)(typescript@5.8.2)
@@ -94,12 +88,6 @@ importers:
       eslint-plugin-format:
         specifier: 1.0.1
         version: 1.0.1(eslint@9.21.0)
-      eslint-plugin-react-hooks:
-        specifier: 5.2.0
-        version: 5.2.0(eslint@9.21.0)
-      eslint-plugin-react-refresh:
-        specifier: 0.4.19
-        version: 0.4.19(eslint@9.21.0)
 
 packages:
 
@@ -470,9 +458,6 @@ packages:
 
   '@jridgewell/sourcemap-codec@1.5.0':
     resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
-
-  '@next/eslint-plugin-next@15.2.1':
-    resolution: {integrity: sha512-6ppeToFd02z38SllzWxayLxjjNfzvc7Wm07gQOKSLjyASvKcXjNStZrLXMHuaWkhjqxe+cnhb2uzfWXm1VEj/Q==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -1143,10 +1128,6 @@ packages:
 
   fast-diff@1.3.0:
     resolution: {integrity: sha512-VxPP4NqbUjj6MaAOafWeUn2cXWLcCtljklUtZf0Ind4XQ+QPtmA0b18zZy0jIQx+ExRVCR/ZQpBmik5lXshNsw==}
-
-  fast-glob@3.3.1:
-    resolution: {integrity: sha512-kNFPyjhh5cKjrUltxs+wFx+ZkbRaxxmZ+X0ZU31SOsxCEtP9VPgtq2teZw1DebupL5GmDaNQ6yKMMVcM41iqDg==}
-    engines: {node: '>=8.6.0'}
 
   fast-glob@3.3.3:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
@@ -2271,6 +2252,7 @@ snapshots:
       - eslint
       - supports-color
       - typescript
+    optional: true
 
   '@eslint-react/core@1.30.2(eslint@9.21.0)(typescript@5.8.2)':
     dependencies:
@@ -2289,8 +2271,10 @@ snapshots:
       - eslint
       - supports-color
       - typescript
+    optional: true
 
-  '@eslint-react/eff@1.30.2': {}
+  '@eslint-react/eff@1.30.2':
+    optional: true
 
   '@eslint-react/eslint-plugin@1.30.2(eslint@9.21.0)(ts-api-utils@2.0.1(typescript@5.8.2))(typescript@5.8.2)':
     dependencies:
@@ -2312,6 +2296,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - ts-api-utils
+    optional: true
 
   '@eslint-react/jsx@1.30.2(eslint@9.21.0)(typescript@5.8.2)':
     dependencies:
@@ -2326,6 +2311,7 @@ snapshots:
       - eslint
       - supports-color
       - typescript
+    optional: true
 
   '@eslint-react/shared@1.30.2(eslint@9.21.0)(typescript@5.8.2)':
     dependencies:
@@ -2337,6 +2323,7 @@ snapshots:
       - eslint
       - supports-color
       - typescript
+    optional: true
 
   '@eslint-react/var@1.30.2(eslint@9.21.0)(typescript@5.8.2)':
     dependencies:
@@ -2351,6 +2338,7 @@ snapshots:
       - eslint
       - supports-color
       - typescript
+    optional: true
 
   '@eslint/compat@1.2.7(eslint@9.21.0)':
     optionalDependencies:
@@ -2423,10 +2411,6 @@ snapshots:
   '@humanwhocodes/retry@0.4.2': {}
 
   '@jridgewell/sourcemap-codec@1.5.0': {}
-
-  '@next/eslint-plugin-next@15.2.1':
-    dependencies:
-      fast-glob: 3.3.1
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -2649,7 +2633,8 @@ snapshots:
 
   binary-extensions@2.3.0: {}
 
-  birecord@0.1.1: {}
+  birecord@0.1.1:
+    optional: true
 
   boolbase@1.0.0: {}
 
@@ -2733,7 +2718,8 @@ snapshots:
 
   comment-parser@1.4.1: {}
 
-  compare-versions@6.1.1: {}
+  compare-versions@6.1.1:
+    optional: true
 
   concat-map@0.0.1: {}
 
@@ -2997,6 +2983,7 @@ snapshots:
       typescript: 5.8.2
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   eslint-plugin-react-dom@1.30.2(eslint@9.21.0)(typescript@5.8.2):
     dependencies:
@@ -3017,6 +3004,7 @@ snapshots:
       typescript: 5.8.2
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   eslint-plugin-react-hooks-extra@1.30.2(eslint@9.21.0)(typescript@5.8.2):
     dependencies:
@@ -3037,10 +3025,12 @@ snapshots:
       typescript: 5.8.2
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   eslint-plugin-react-hooks@5.2.0(eslint@9.21.0):
     dependencies:
       eslint: 9.21.0
+    optional: true
 
   eslint-plugin-react-naming-convention@1.30.2(eslint@9.21.0)(typescript@5.8.2):
     dependencies:
@@ -3061,10 +3051,12 @@ snapshots:
       typescript: 5.8.2
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   eslint-plugin-react-refresh@0.4.19(eslint@9.21.0):
     dependencies:
       eslint: 9.21.0
+    optional: true
 
   eslint-plugin-react-web-api@1.30.2(eslint@9.21.0)(typescript@5.8.2):
     dependencies:
@@ -3084,6 +3076,7 @@ snapshots:
       typescript: 5.8.2
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   eslint-plugin-react-x@1.30.2(eslint@9.21.0)(ts-api-utils@2.0.1(typescript@5.8.2))(typescript@5.8.2):
     dependencies:
@@ -3106,6 +3099,7 @@ snapshots:
       typescript: 5.8.2
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   eslint-plugin-regexp@2.7.0(eslint@9.21.0):
     dependencies:
@@ -3274,14 +3268,6 @@ snapshots:
   fast-deep-equal@3.1.3: {}
 
   fast-diff@1.3.0: {}
-
-  fast-glob@3.3.1:
-    dependencies:
-      '@nodelib/fs.stat': 2.0.5
-      '@nodelib/fs.walk': 1.2.8
-      glob-parent: 5.1.2
-      merge2: 1.4.1
-      micromatch: 4.0.8
 
   fast-glob@3.3.3:
     dependencies:
@@ -4097,7 +4083,8 @@ snapshots:
 
   string-argv@0.3.2: {}
 
-  string-ts@2.2.1: {}
+  string-ts@2.2.1:
+    optional: true
 
   string-width@7.2.0:
     dependencies:
@@ -4150,7 +4137,8 @@ snapshots:
     dependencies:
       typescript: 5.8.2
 
-  ts-pattern@5.6.2: {}
+  ts-pattern@5.6.2:
+    optional: true
 
   tsc-alias@1.8.11:
     dependencies:
