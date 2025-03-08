@@ -1,11 +1,7 @@
-<script lang="ts" setup>
-// import { Button } from '@hunde-sitting/ui-components';
-</script>
-
 <template>
-    <div>
+    <div class="h-screen flex items-center justify-center">
         <NuxtRouteAnnouncer />
-        <NuxtWelcome />
-        <Button>Click me</Button>
+        <!-- <NuxtWelcome /> -->
+        <ThemeSwitcher />
     </div>
 </template>

@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        /* Light mode */
+        --background: 174 20% 97%; /* Light mint background */
+        --foreground: 213 30% 20%; /* Dark navy text */
+
+        --card: 0 0% 100%;
+        --card-foreground: 213 30% 20%;
+
+        --popover: 0 0% 100%;
+        --popover-foreground: 213 30% 20%;
+
+        --primary: 183 73% 39%; /* Teal - main brand color */
+        --primary-foreground: 0 0% 100%;
+
+        --secondary: 34 95% 70%; /* Warm yellow - secondary accent */
+        --secondary-foreground: 213 30% 20%;
+
+        --muted: 183 25% 90%;
+        --muted-foreground: 213 30% 40%;
+
+        --accent: 34 95% 70%; /* Same as secondary for consistency */
+        --accent-foreground: 213 30% 20%;
+
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 98%;
+
+        --border: 213 15% 85%;
+        --input: 213 15% 85%;
+        --ring: 183 73% 39%;
+
+        /* Chart colors - pet-friendly palette */
+        --chart-1: 183 73% 39%; /* Teal */
+        --chart-2: 34 95% 70%; /* Yellow */
+        --chart-3: 150 60% 40%; /* Green */
+        --chart-4: 200 75% 60%; /* Sky blue */
+        --chart-5: 20 90% 65%; /* Coral */
+
+        --radius: 0.6rem;
+    }
+
+    .dark {
+        --background: 213 35% 12%; /* Dark navy background */
+        --foreground: 213 15% 95%; /* Light text */
+
+        --card: 213 35% 16%;
+        --card-foreground: 213 15% 95%;
+
+        --popover: 213 35% 16%;
+        --popover-foreground: 213 15% 95%;
+
+        --primary: 183 60% 45%; /* Slightly brighter teal for dark mode */
+        --primary-foreground: 213 35% 12%;
+
+        --secondary: 34 70% 60%; /* Muted yellow for dark mode */
+        --secondary-foreground: 213 35% 12%;
+
+        --muted: 213 25% 25%;
+        --muted-foreground: 213 15% 70%;
+
+        --accent: 34 70% 60%;
+        --accent-foreground: 213 35% 12%;
+
+        --destructive: 0 70% 45%;
+        --destructive-foreground: 213 15% 95%;
+
+        --border: 213 25% 26%;
+        --input: 213 25% 26%;
+        --ring: 183 60% 45%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}

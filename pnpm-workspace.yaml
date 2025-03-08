@@ -3,3 +3,6 @@ packages:
   - packages/*
 ignoredBuiltDependencies:
   - simple-git-hooks
+  - '@parcel/watcher'
+  - esbuild
+  - vue-demi

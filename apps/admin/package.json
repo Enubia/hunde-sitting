@@ -4,6 +4,7 @@
     "private": true,
     "scripts": {
         "build": "nuxt build",
+        "clean": "rm -rf .nuxt .output",
         "dev": "nuxt dev",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
@@ -11,12 +12,23 @@
     },
     "dependencies": {
         "@hunde-sitting/api-client": "workspace:*",
-        "@hunde-sitting/ui-components": "workspace:*",
+        "class-variance-authority": "0.7.1",
+        "clsx": "2.1.1",
+        "lucide-vue-next": "0.479.0",
         "nuxt": "3.16.0",
+        "reka-ui": "2.0.2",
+        "shadcn-nuxt": "1.0.2",
+        "tailwind-merge": "3.0.2",
+        "tailwindcss-animate": "1.0.7",
         "vue": "3.5.13",
         "vue-router": "4.5.0"
     },
     "devDependencies": {
-        "@hunde-sitting/eslint-config": "workspace:*"
+        "@hunde-sitting/eslint-config": "workspace:*",
+        "@iconify-json/radix-icons": "^1.2.2",
+        "@iconify/vue": "^4.3.0",
+        "@nuxtjs/color-mode": "^3.5.2",
+        "@nuxtjs/tailwindcss": "6.13.1",
+        "@tanstack/vue-table": "8.21.2"
     }
 }
