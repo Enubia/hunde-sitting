@@ -11,11 +11,16 @@
             "#lib/*": ["./src/lib/*"]
         },
         "resolveJsonModule": true,
+        "rootDir": "./src",
         "outDir": "./dist",
         "allowSyntheticDefaultImports": true,
         "verbatimModuleSyntax": true
     },
     "include": [
         "src"
+    ],
+    "exclude": [
+        "src/lib/db/migrations/*.ts",
+        "src/lib/db/seeds/*.ts"
     ]
 }

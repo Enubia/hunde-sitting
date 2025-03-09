@@ -4,17 +4,17 @@
     "version": "1.0.0",
     "main": "./dist/index.js",
     "scripts": {
-        "build": "tsc",
+        "build": "pnpm clean && tsc",
         "clean": "rm -rf dist && rm -rf .turbo",
         "dev": "tsx watch src/index.ts",
         "lint": "eslint -c ../../eslint.config.mjs .",
         "check-types": "tsc --noEmit"
     },
     "dependencies": {
-        "@hunde-sitting/api": "workspace:*",
         "hono": "4.7.4"
     },
     "devDependencies": {
+        "@hunde-sitting/api": "workspace:*",
         "@types/node": "22.13.9",
         "tsx": "4.19.3",
         "typescript": "5.8.2"

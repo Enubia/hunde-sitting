@@ -14,7 +14,6 @@ const zodEnv = z.object({
     POSTGRES_PORT: z.number({ coerce: true }),
 });
 
-// Export the type instead of using a namespace
 let schema: z.infer<typeof zodEnv>;
 
 function getEnv() {

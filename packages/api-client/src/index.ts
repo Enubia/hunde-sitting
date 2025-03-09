@@ -1,4 +1,4 @@
-import type { Router } from '@hunde-sitting/api/routes';
+import type { OmitAbleWebRoutes, Router } from '@hunde-sitting/api';
 
 import { hc } from 'hono/client';
 
@@ -6,19 +6,12 @@ import { hc } from 'hono/client';
 // https://hono.dev/docs/guides/rpc#compile-your-code-before-using-it-recommended
 // eslint-disable-next-line unused-imports/no-unused-vars
 const client = hc<Router>('');
-export type Client = Omit<typeof client, 'admin'>;
+export type WebClient = Omit<typeof client, OmitAbleWebRoutes>;
+export type AdminClient = typeof client;
 
-export default (...args: Parameters<typeof hc>): Client =>
+export function adminClient(...args: Parameters<typeof hc>): AdminClient {
+    return hc<Router>(...args);
+}
+
+export default (...args: Parameters<typeof hc>): WebClient =>
     hc<Router>(...args);
-
-export type ErrorSchema = {
-    error: {
-        issues: {
-            code: string;
-            path: (string | number)[];
-            message?: string | undefined;
-        }[];
-        name: string;
-    };
-    success: boolean;
-};

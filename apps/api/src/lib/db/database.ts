@@ -3,14 +3,9 @@ import { Pool } from 'pg';
 
 import type { DB } from './schema/db.js';
 
+// DO NOT CHANGE THIS TO AN ALIAS IMPORT
+// otherwise kysely-codegen can't execute the code
 import { config } from '../config.js';
-
-// import type { Database } from './types.ts'; // this is the Database interface we defined earlier
-
-// Database interface is passed to Kysely's constructor, and from now on, Kysely
-// knows your database structure.
-// Dialect is passed to Kysely's constructor, and from now on, Kysely knows how
-// to communicate with your database.
 
 export const db = new Kysely<DB>({
     dialect: new PostgresDialect({

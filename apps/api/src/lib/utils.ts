@@ -4,10 +4,10 @@ import { createHash } from 'node:crypto';
 
 export function generateRandomString(myLength: number) {
     const chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-    const randomArray = Array.from({ length: myLength }, (_v, _k) => chars[Math.floor(Math.random() * chars.length)]);
-    const randomString = randomArray.join('');
-
-    return randomString;
+    return Array.from(
+        { length: myLength },
+        () => chars[Math.floor(Math.random() * chars.length)],
+    ).join('');
 }
 
 export function md5(...strings: string[]) {
