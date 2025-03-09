@@ -38,4 +38,11 @@ export default antfu(
             'unused-imports/no-unused-imports': 'warn',
         },
     },
+    {
+        files: ['**/migrations/**', '**/seeds/**'],
+
+        rules: {
+            'unused-imports/no-unused-vars': 'off',
+        },
+    },
 );

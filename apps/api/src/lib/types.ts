@@ -6,11 +6,11 @@ export type AppEnv = {
     };
     Variables: {
         log: {
-            debug: (...message: string[]) => void;
-            info: (...message: string[]) => void;
-            warn: (...message: string[]) => void;
-            error: (...message: string[]) => void;
-            critical: (...message: string[]) => void;
+            debug: (...args: unknown[]) => void;
+            info: (...args: unknown[]) => void;
+            warn: (...args: unknown[]) => void;
+            error: (...args: unknown[]) => void;
+            critical: (...args: unknown[]) => void;
         };
     };
 };

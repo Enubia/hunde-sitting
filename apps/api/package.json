@@ -12,22 +12,37 @@
         "build": "tsc && tsc-alias",
         "clean": "rm -rf dist && rm -rf .turbo",
         "dev": "tsx watch src/index.ts",
+        "migrate:down": "pnpm exec kysely migrate:down",
+        "migrate:latest": "pnpm exec kysely migrate:latest",
+        "migrate:list": "pnpm exec kysely migrate:list",
+        "migrate:make": "pnpm exec kysely migrate:make",
+        "migrate:rollback": "pnpm exec kysely migrate:rollback",
+        "seed:run": "pnpm exec kysely seed:run",
+        "seed:make": "pnpm exec kysely seed:make",
+        "migrate:up": "pnpm exec kysely migrate:up",
+        "seed": "pnpm exec kysely seed",
         "lint": "eslint -c ../../eslint.config.mjs .",
+        "start:db": "docker compose up",
         "start": "node dist/index.js",
         "check-types": "tsc --noEmit"
     },
     "dependencies": {
         "@hono/node-server": "1.13.8",
+        "@hono/zod-validator": "0.4.3",
         "hono": "4.7.4",
+        "kysely": "0.27.6",
+        "pg": "8.13.3",
         "stoker": "1.4.2",
         "zod": "3.24.2"
     },
     "devDependencies": {
         "@types/node": "22.13.9",
+        "@types/pg": "^8.11.11",
         "chalk": "5.4.1",
         "dotenv": "16.4.7",
+        "kysely-ctl": "0.12.1",
         "tsc-alias": "1.8.11",
-        "tscw-config": "^1.1.2",
+        "tscw-config": "1.1.2",
         "tsx": "4.19.3",
         "typescript": "5.8.2"
     }

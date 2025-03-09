@@ -4,17 +4,17 @@ import type { Context } from 'hono';
 import chalk from 'chalk';
 
 export default function logFunction(c: Context) {
-    return (message: string, ...rest: unknown[]) => {
+    return (...args: unknown[]) => {
         const id = c.get('requestId');
 
         c.set('log', {
-            debug: (...message: string[]) => console.log(chalk.green(`[req-${id}]`, '[DEBUG]', ...message)),
-            info: (...message: string[]) => console.log(chalk.white(`[req-${id}]`, '[INFO]', ...message)),
-            warn: (...message: string[]) => console.log(chalk.yellow(`[req-${id}]`, '[WARNING]', ...message)),
-            error: (...message: string[]) => console.log(chalk.red(`[req-${id}]`, '[ERROR]', ...message)),
-            critical: (...message: string[]) => console.log(chalk.magenta(`[req-${id}]`, '[CRITICAL]', ...message)),
+            debug: (...args: unknown[]) => console.log(chalk.green(`[req-${id}]`, '[DEBUG]'), ...args),
+            info: (...args: unknown[]) => console.log(`[req-${id}]`, '[INFO]', ...args),
+            warn: (...args: unknown[]) => console.log(chalk.yellow(`[req-${id}]`, '[WARNING]'), ...args),
+            error: (...args: unknown[]) => console.log(chalk.red(`[req-${id}]`, '[ERROR]'), ...args),
+            critical: (...args: unknown[]) => console.log(chalk.magenta(`[req-${id}]`, '[CRITICAL]'), ...args),
         });
 
-        console.log(`[req-${id}] ${message}`, ...rest);
+        console.log(`[req-${id}]`, ...args);
     };
 }
