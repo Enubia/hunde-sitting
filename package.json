@@ -8,17 +8,17 @@
         "dev": "turbo dev",
         "dev:apps": "turbo dev --filter={./apps/*}",
         "dev:api": "turbo dev --filter @hunde-sitting/api",
-        "dev:web": "turbo dev --filter @hunde-sitting/web --filter @hunde-sitting/api",
         "dev:admin": "turbo dev --filter @hunde-sitting/admin",
         "dev:admin-full": "turbo dev --filter @hunde-sitting/admin --filter @hunde-sitting/api",
-        "dev:frontend": "turbo dev --filter @hunde-sitting/web",
-        "dev:frontend-full": "turbo dev --filter @hunde-sitting/web --filter @hunde-sitting/api",
+        "dev:web": "turbo dev --filter @hunde-sitting/web",
+        "dev:web-full": "turbo dev --filter @hunde-sitting/web --filter @hunde-sitting/api",
         "lint": "turbo lint",
         "test": "turbo test",
         "check-types": "turbo check-types",
         "postinstall": "pnpm exec simple-git-hooks"
     },
     "devDependencies": {
+        "@antfu/eslint-config": "4.8.1",
         "lint-staged": "15.4.3",
         "simple-git-hooks": "2.11.1",
         "turbo": "2.4.4"

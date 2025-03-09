@@ -1,3 +1,39 @@
-import config from './packages/eslint-config/eslint.config.js';
+import antfu from '@antfu/eslint-config';
 
-export default config;
+export default antfu(
+    {
+        formatters: true,
+        stylistic: {
+            indent: 4,
+            quotes: 'single',
+            semi: true,
+        },
+        type: 'app',
+        yaml: false,
+    },
+    {
+        rules: {
+            'antfu/no-top-level-await': ['off'],
+            curly: ['error', 'all'],
+            'import/order': 'off',
+            'no-console': ['warn', { allow: ['warn', 'error'] }],
+            'node/no-process-env': ['error'],
+            'node/prefer-global/process': 'off',
+            'perfectionist/sort-imports': ['error', {
+                ignoreCase: true,
+                newlinesBetween: 'always',
+                order: 'asc',
+                tsconfigRootDir: '.',
+                type: 'alphabetical',
+            }],
+            'style/brace-style': ['error', '1tbs'],
+            'style/comma-dangle': ['error', 'always-multiline'],
+            'style/eol-last': ['error', 'always'],
+            'style/linebreak-style': ['error', 'unix'],
+            'style/quote-props': ['error', 'as-needed'],
+            'style/quotes': ['error', 'single', { avoidEscape: true }],
+            'ts/consistent-type-definitions': ['error', 'type'],
+            'unused-imports/no-unused-imports': 'warn',
+        },
+    },
+);

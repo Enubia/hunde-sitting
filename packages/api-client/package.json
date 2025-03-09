@@ -7,7 +7,7 @@
         "build": "tsc",
         "clean": "rm -rf dist && rm -rf .turbo",
         "dev": "tsx watch src/index.ts",
-        "lint": "eslint .",
+        "lint": "eslint -c ../../eslint.config.mjs .",
         "check-types": "tsc --noEmit"
     },
     "dependencies": {
@@ -15,7 +15,6 @@
         "hono": "4.7.4"
     },
     "devDependencies": {
-        "@hunde-sitting/eslint-config": "workspace:*",
         "@types/node": "22.13.9",
         "tsx": "4.19.3",
         "typescript": "5.8.2"

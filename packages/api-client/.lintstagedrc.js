@@ -1,3 +1,3 @@
 export default {
-    'src/**/*.ts': 'eslint -c ./eslint.config.js',
+    'src/**/*.ts': 'eslint -c ../../eslint.config.mjs',
 };
