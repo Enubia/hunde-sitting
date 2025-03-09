@@ -8,6 +8,8 @@ export default antfu(
             quotes: 'single',
             semi: true,
         },
+        typescript: true,
+        vue: true,
         type: 'app',
         yaml: false,
     },

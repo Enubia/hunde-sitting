@@ -19,6 +19,8 @@
     },
     "devDependencies": {
         "@antfu/eslint-config": "4.8.1",
+        "eslint": "9.22.0",
+        "eslint-plugin-format": "1.0.1",
         "lint-staged": "15.4.3",
         "simple-git-hooks": "2.11.1",
         "turbo": "2.4.4"

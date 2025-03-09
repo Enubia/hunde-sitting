@@ -33,13 +33,6 @@
         "postcss"
     ],
 
-    "eslint.workingDirectories": [
-        { "pattern": "./apps/web" },
-        { "pattern": "./apps/admin" },
-        { "pattern": "./apps/api" },
-        { "pattern": "./packages/api-client" }
-    ],
-
     "search.exclude": {
         "**/*.md": true,
         "**/.gitignore": true,
