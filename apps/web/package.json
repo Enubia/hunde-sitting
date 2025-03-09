@@ -1,5 +1,5 @@
 {
-    "name": "@hunde-sitting/admin",
+    "name": "@hunde-sitting/web",
     "type": "module",
     "private": true,
     "scripts": {
