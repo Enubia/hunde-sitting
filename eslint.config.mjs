@@ -12,6 +12,10 @@ export default antfu(
         vue: true,
         type: 'app',
         yaml: false,
+
+        ignores: [
+            '**/db.d.ts',
+        ],
     },
     {
         rules: {
