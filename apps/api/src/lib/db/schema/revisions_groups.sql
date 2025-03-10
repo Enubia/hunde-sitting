@@ -29,15 +29,15 @@ CREATE TABLE user_groups (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
     name VARCHAR(100) NOT NULL UNIQUE,
     description TEXT,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
 );
 
 -- Link users to groups (many-to-many)
 CREATE TABLE user_group_memberships (
     user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     group_id UUID NOT NULL REFERENCES user_groups (id) ON DELETE CASCADE,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (user_id, group_id)
 );
 
@@ -47,8 +47,8 @@ CREATE TABLE group_permissions (
     group_id UUID NOT NULL REFERENCES user_groups (id) ON DELETE CASCADE,
     resource resource_name NOT NULL,
     permission permission_level NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,,
     UNIQUE (group_id, resource)
 );
 
@@ -58,8 +58,8 @@ CREATE TABLE user_permissions (
     user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
     resource resource_name NOT NULL,
     permission permission_level NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,,
     UNIQUE (user_id, resource)
 );
 
@@ -73,7 +73,7 @@ CREATE TABLE revisions (
     old_values JSONB, -- Previous values in case of update/delete
     new_values JSONB, -- New values in case of insert/update
     changed_fields TEXT [], -- Array of field names that were changed (for quick filtering)
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
 );
 
 -- Indexes for revisions table to improve query performance

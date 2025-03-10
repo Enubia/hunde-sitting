@@ -55,7 +55,7 @@ importers:
         specifier: 22.13.9
         version: 22.13.9
       '@types/pg':
-        specifier: ^8.11.11
+        specifier: 8.11.11
         version: 8.11.11
       chalk:
         specifier: 5.4.1
@@ -64,7 +64,7 @@ importers:
         specifier: 16.4.7
         version: 16.4.7
       kysely-codegen:
-        specifier: ^0.18.2
+        specifier: 0.18.2
         version: 0.18.2(kysely@0.27.6)(pg@8.13.3)(typescript@5.8.2)
       kysely-ctl:
         specifier: 0.12.1
@@ -136,13 +136,13 @@ importers:
 
   packages/api-client:
     dependencies:
-      '@hunde-sitting/api':
-        specifier: workspace:*
-        version: link:../../apps/api
       hono:
         specifier: 4.7.4
         version: 4.7.4
     devDependencies:
+      '@hunde-sitting/api':
+        specifier: workspace:*
+        version: link:../../apps/api
       '@types/node':
         specifier: 22.13.9
         version: 22.13.9

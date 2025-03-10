@@ -37,8 +37,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('id', 'uuid', col => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
         .addColumn('name', 'varchar(100)', col => col.notNull().unique())
         .addColumn('description', 'text')
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .execute();
 
     // Create user_group_memberships table
@@ -46,7 +46,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .createTable('user_group_memberships')
         .addColumn('user_id', 'uuid', col => col.notNull().references('users.id').onDelete('cascade'))
         .addColumn('group_id', 'uuid', col => col.notNull().references('user_groups.id').onDelete('cascade'))
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .addPrimaryKeyConstraint('user_group_memberships_pkey', ['user_id', 'group_id'])
         .execute();
 
@@ -57,8 +57,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('group_id', 'uuid', col => col.notNull().references('user_groups.id').onDelete('cascade'))
         .addColumn('resource', sql`resource_name`, col => col.notNull())
         .addColumn('permission', sql`permission_level`, col => col.notNull())
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .addUniqueConstraint('group_permissions_unique', ['group_id', 'resource'])
         .execute();
 
@@ -69,8 +69,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('user_id', 'uuid', col => col.notNull().references('users.id').onDelete('cascade'))
         .addColumn('resource', sql`resource_name`, col => col.notNull())
         .addColumn('permission', sql`permission_level`, col => col.notNull())
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .addUniqueConstraint('user_permissions_unique', ['user_id', 'resource'])
         .execute();
 
@@ -85,7 +85,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('old_values', 'jsonb')
         .addColumn('new_values', 'jsonb')
         .addColumn('changed_fields', sql`text[]`)
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .execute();
 
     // Create indexes for revisions table

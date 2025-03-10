@@ -35,8 +35,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('longitude', 'decimal(11, 8)')
         .addColumn('is_active', 'boolean', col => col.defaultTo(true))
         .addColumn('is_email_verified', 'boolean', col => col.defaultTo(false))
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .execute();
 
     // Add location column to users table
@@ -52,8 +52,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('access_token', 'text')
         .addColumn('refresh_token', 'text')
         .addColumn('expires_at', 'timestamptz')
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .addUniqueConstraint('oauth_provider_unique', ['provider', 'provider_user_id'])
         .execute();
 
@@ -72,8 +72,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('max_dogs_at_once', 'integer', col => col.defaultTo(1))
         .addColumn('service_radius_km', 'decimal(8, 2)')
         .addColumn('last_location_update', 'timestamptz')
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .execute();
 
     // Create sitter_services table
@@ -85,8 +85,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('description', 'text')
         .addColumn('price', 'decimal(10, 2)')
         .addColumn('is_available', 'boolean', col => col.defaultTo(true))
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .execute();
 
     // Create sitter_certificates table
@@ -101,8 +101,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('certificate_file_path', 'text')
         .addColumn('verification_status', sql`verification_status`, col => col.defaultTo('pending'))
         .addColumn('admin_notes', 'text')
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .execute();
 
     // Create dog_breeds table
@@ -113,7 +113,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('size_category', sql`size_category`, col => col.notNull())
         .addColumn('special_care_requirements', 'text')
         .addColumn('requires_certificate', 'boolean', col => col.defaultTo(false))
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .execute();
 
     // Create sitter_breed_specialties table
@@ -123,7 +123,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('breed_id', 'uuid', col => col.notNull().references('dog_breeds.id').onDelete('cascade'))
         .addColumn('experience_years', 'integer', col => col.defaultTo(0))
         .addColumn('additional_notes', 'text')
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .addPrimaryKeyConstraint('sitter_breed_specialties_pk', ['sitter_id', 'breed_id'])
         .execute();
 
@@ -145,8 +145,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('vaccination_status', sql`vaccination_status`, col => col.defaultTo('unknown'))
         .addColumn('temperament', 'text')
         .addColumn('photo_url', 'text')
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .execute();
 
     // Create bookings table
@@ -164,8 +164,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('location_address', 'text')
         .addColumn('special_instructions', 'text')
         .addColumn('total_price', 'decimal(10, 2)')
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .execute();
 
     // Create reviews table
@@ -177,8 +177,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('reviewee_id', 'uuid', col => col.notNull().references('users.id').onDelete('cascade'))
         .addColumn('rating', 'integer', col => col.notNull().check(sql`rating BETWEEN 1 AND 5`))
         .addColumn('comment', 'text')
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .execute();
 
     // Create availability table
@@ -189,8 +189,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('day_of_week', 'integer', col => col.notNull().check(sql`day_of_week BETWEEN 0 AND 6`))
         .addColumn('start_time', 'time', col => col.notNull())
         .addColumn('end_time', 'time', col => col.notNull())
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .addCheckConstraint('valid_time_range', sql`start_time < end_time`)
         .execute();
 
@@ -202,8 +202,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('start_date', 'timestamptz', col => col.notNull())
         .addColumn('end_date', 'timestamptz', col => col.notNull())
         .addColumn('reason', 'varchar(255)')
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .addCheckConstraint('valid_date_range', sql`start_date < end_date`)
         .execute();
 
@@ -213,8 +213,8 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('id', 'uuid', col => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
         .addColumn('user_id', 'uuid', col => col.notNull().references('users.id').onDelete('cascade'))
         .addColumn('role', sql`admin_role`, col => col.notNull().defaultTo('admin'))
-        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
-        .addColumn('updated_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('updated_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
         .execute();
 
     // Create indexes
