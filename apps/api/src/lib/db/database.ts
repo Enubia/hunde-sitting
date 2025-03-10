@@ -1,13 +1,13 @@
 import { Kysely, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
 
-import type { DB } from './schema/db.js';
+import type { Schema } from './schema/schema.js';
 
 // DO NOT CHANGE THIS TO AN ALIAS IMPORT
 // otherwise kysely-codegen can't execute the code
 import { config } from '../config.js';
 
-export const db = new Kysely<DB>({
+export const db = new Kysely<Schema>({
     dialect: new PostgresDialect({
         pool: new Pool({
             database: config.POSTGRES_DB,
