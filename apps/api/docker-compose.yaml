@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres
+    image: postgis/postgis:17-3.5
     container_name: hunde_sitting_db
     restart: always
     ports:
