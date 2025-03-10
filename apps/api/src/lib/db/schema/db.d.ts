@@ -7,8 +7,6 @@ import type { ColumnType } from "kysely";
 
 export type ActionName = "DELETE" | "INSERT" | "UPDATE";
 
-export type AdminRole = "admin" | "super_admin";
-
 export type AuthProvider = "apple" | "facebook" | "github" | "google";
 
 export type BookingStatus = "cancelled" | "completed" | "confirmed" | "in_progress" | "pending" | "rejected";
@@ -35,7 +33,7 @@ export type Numeric = ColumnType<string, number | string, number | string>;
 
 export type PermissionLevel = "admin" | "read" | "write";
 
-export type ResourceName = "admin_users" | "availability" | "bookings" | "dog_breeds" | "dogs" | "group_permissions" | "oauth_accounts" | "reviews" | "revisions" | "sitter_breed_specialties" | "sitter_certificates" | "sitter_services" | "sitters" | "unavailable_dates" | "user_group_memberships" | "user_groups" | "user_permissions" | "users";
+export type ResourceName = "availability" | "bookings" | "dog_breeds" | "dogs" | "group_permissions" | "oauth_accounts" | "reviews" | "revisions" | "sitter_breed_specialties" | "sitter_certificates" | "sitter_services" | "sitters" | "unavailable_dates" | "user_group_memberships" | "user_groups" | "user_permissions" | "users";
 
 export type ServiceType = "boarding" | "daycare" | "dog_walking" | "grooming" | "overnight_stay" | "pet_taxi" | "training" | "vet_visits";
 
@@ -45,38 +43,32 @@ export type SizeCategory = "giant" | "large" | "medium" | "small" | "tiny";
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export type UserGroupName = "administrators" | "moderators";
+
 export type VaccinationStatus = "fully_vaccinated" | "not_vaccinated" | "partially_vaccinated" | "unknown";
 
 export type VerificationStatus = "approved" | "pending" | "rejected";
-
-export interface AdminUsers {
-  created_at: Generated<Timestamp>;
-  id: Generated<string>;
-  role: Generated<AdminRole>;
-  updated_at: Generated<Timestamp>;
-  user_id: string;
-}
 
 export interface Availability {
   created_at: Generated<Timestamp>;
   day_of_week: number;
   end_time: string;
-  id: Generated<string>;
-  sitter_id: string;
+  id: Generated<number>;
+  sitter_id: number;
   start_time: string;
   updated_at: Generated<Timestamp>;
 }
 
 export interface Bookings {
-  client_id: string;
+  client_id: number;
   created_at: Generated<Timestamp>;
-  dog_id: string;
+  dog_id: number;
   end_date: Timestamp;
-  id: Generated<string>;
+  id: Generated<number>;
   location_address: string | null;
   location_type: LocationType;
-  service_id: string | null;
-  sitter_id: string;
+  service_id: number | null;
+  sitter_id: number;
   special_instructions: string | null;
   start_date: Timestamp;
   status: Generated<BookingStatus>;
@@ -86,7 +78,7 @@ export interface Bookings {
 
 export interface DogBreeds {
   created_at: Generated<Timestamp>;
-  id: Generated<string>;
+  id: Generated<number>;
   name: string;
   requires_certificate: Generated<boolean>;
   size_category: SizeCategory;
@@ -96,14 +88,14 @@ export interface DogBreeds {
 export interface Dogs {
   age_months: number | null;
   age_years: number | null;
-  breed_id: string | null;
+  breed_id: number | null;
   created_at: Generated<Timestamp>;
-  id: Generated<string>;
+  id: Generated<number>;
   is_neutered: boolean | null;
   medical_conditions: string | null;
   mixed_breed: Generated<boolean>;
   name: string;
-  owner_id: string;
+  owner_id: number;
   photo_url: string | null;
   sex: Sex | null;
   special_needs: string | null;
@@ -135,8 +127,8 @@ export interface GeometryColumns {
 
 export interface GroupPermissions {
   created_at: Generated<Timestamp>;
-  group_id: string;
-  id: Generated<string>;
+  group_id: number;
+  id: Generated<number>;
   permission: PermissionLevel;
   resource: ResourceName;
   updated_at: Generated<Timestamp>;
@@ -146,22 +138,22 @@ export interface OauthAccounts {
   access_token: string | null;
   created_at: Generated<Timestamp>;
   expires_at: Timestamp | null;
-  id: Generated<string>;
+  id: Generated<number>;
   provider: AuthProvider;
   provider_user_id: string;
   refresh_token: string | null;
   updated_at: Generated<Timestamp>;
-  user_id: string;
+  user_id: number;
 }
 
 export interface Reviews {
-  booking_id: string | null;
+  booking_id: number | null;
   comment: string | null;
   created_at: Generated<Timestamp>;
-  id: Generated<string>;
+  id: Generated<number>;
   rating: number;
-  reviewee_id: string;
-  reviewer_id: string;
+  reviewee_id: number;
+  reviewer_id: number;
   updated_at: Generated<Timestamp>;
 }
 
@@ -169,20 +161,20 @@ export interface Revisions {
   action: ActionName;
   changed_fields: string[] | null;
   created_at: Generated<Timestamp>;
-  id: Generated<string>;
+  id: Generated<number>;
   new_values: Json | null;
   old_values: Json | null;
   record_id: string;
   table_name: string;
-  user_id: string | null;
+  user_id: number | null;
 }
 
 export interface SitterBreedSpecialties {
   additional_notes: string | null;
-  breed_id: string;
+  breed_id: number;
   created_at: Generated<Timestamp>;
   experience_years: Generated<number>;
-  sitter_id: string;
+  sitter_id: number;
 }
 
 export interface SitterCertificates {
@@ -191,10 +183,10 @@ export interface SitterCertificates {
   certificate_name: string;
   created_at: Generated<Timestamp>;
   expiration_date: Timestamp | null;
-  id: Generated<string>;
+  id: Generated<number>;
   issue_date: Timestamp | null;
   issuing_organization: string;
-  sitter_id: string;
+  sitter_id: number;
   updated_at: Generated<Timestamp>;
   verification_status: Generated<VerificationStatus>;
 }
@@ -205,13 +197,13 @@ export interface Sitters {
   created_at: Generated<Timestamp>;
   daily_rate: Numeric | null;
   hourly_rate: Numeric | null;
-  id: Generated<string>;
+  id: Generated<number>;
   is_available: Generated<boolean>;
   last_location_update: Timestamp | null;
   max_dogs_at_once: Generated<number>;
   service_radius_km: Numeric | null;
   updated_at: Generated<Timestamp>;
-  user_id: string;
+  user_id: number;
   verification_status: Generated<VerificationStatus>;
   years_experience: number | null;
 }
@@ -219,11 +211,11 @@ export interface Sitters {
 export interface SitterServices {
   created_at: Generated<Timestamp>;
   description: string | null;
-  id: Generated<string>;
+  id: Generated<number>;
   is_available: Generated<boolean>;
   price: Numeric | null;
   service_name: ServiceType;
-  sitter_id: string;
+  sitter_id: number;
   updated_at: Generated<Timestamp>;
 }
 
@@ -238,34 +230,34 @@ export interface SpatialRefSys {
 export interface UnavailableDates {
   created_at: Generated<Timestamp>;
   end_date: Timestamp;
-  id: Generated<string>;
+  id: Generated<number>;
   reason: string | null;
-  sitter_id: string;
+  sitter_id: number;
   start_date: Timestamp;
   updated_at: Generated<Timestamp>;
 }
 
 export interface UserGroupMemberships {
   created_at: Generated<Timestamp>;
-  group_id: string;
-  user_id: string;
+  group_id: number;
+  user_id: number;
 }
 
 export interface UserGroups {
   created_at: Generated<Timestamp>;
   description: string | null;
-  id: Generated<string>;
-  name: string;
+  id: Generated<number>;
+  name: UserGroupName;
   updated_at: Generated<Timestamp>;
 }
 
 export interface UserPermissions {
   created_at: Generated<Timestamp>;
-  id: Generated<string>;
+  id: Generated<number>;
   permission: PermissionLevel;
   resource: ResourceName;
   updated_at: Generated<Timestamp>;
-  user_id: string;
+  user_id: number;
 }
 
 export interface Users {
@@ -276,7 +268,7 @@ export interface Users {
   country: string | null;
   created_at: Generated<Timestamp>;
   email: string;
-  id: Generated<string>;
+  id: Generated<number>;
   is_active: Generated<boolean>;
   is_email_verified: Generated<boolean>;
   latitude: Numeric | null;
@@ -290,7 +282,6 @@ export interface Users {
 }
 
 export interface DB {
-  admin_users: AdminUsers;
   availability: Availability;
   bookings: Bookings;
   dog_breeds: DogBreeds;
