@@ -226,8 +226,8 @@ CREATE INDEX idx_users_location ON users USING GIST (location);
 CREATE OR REPLACE FUNCTION update_location()
 RETURNS TRIGGER AS $$
 BEGIN
-  NEW.location := ST_SetSRID(ST_MakePoint(NEW.longitude, NEW.latitude), 4326)::geography;
-  RETURN NEW;
+    NEW.location := ST_SetSRID(ST_MakePoint(NEW.longitude, NEW.latitude), 4326)::geography;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
