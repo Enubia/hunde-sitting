@@ -17,6 +17,31 @@ CREATE TYPE admin_role AS ENUM ('admin', 'super_admin');
 
 CREATE TYPE vaccination_status AS ENUM ('fully_vaccinated', 'partially_vaccinated', 'not_vaccinated', 'unknown');
 
+CREATE TYPE action_name AS ENUM ('INSERT', 'UPDATE', 'DELETE');
+
+CREATE TYPE permission_level AS ENUM ('read', 'write', 'admin');
+
+CREATE TYPE resource_name AS ENUM (
+    'users', 
+    'sitters', 
+    'dogs', 
+    'bookings', 
+    'reviews', 
+    'dog_breeds', 
+    'sitter_certificates', 
+    'sitter_services',
+    'availability',
+    'unavailable_dates',
+    'admin_users',
+    'oauth_accounts',
+    'user_groups',
+    'user_group_memberships',
+    'group_permissions',
+    'user_permissions',
+    'revisions',
+    'sitter_breed_specialties'
+);
+
 -- Now create tables with the enum types
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -34,8 +59,12 @@ CREATE TABLE users (
     longitude DECIMAL(11, 8),
     is_active BOOLEAN DEFAULT TRUE NOT NULL,
     is_email_verified BOOLEAN DEFAULT FALSE NOT NULL,
+    permissions JSONB DEFAULT '{}'::JSONB NOT NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT validate_user_permissions CHECK (
+        validate_permissions_jsonb (permissions)
+    )
 );
 
 CREATE TABLE oauth_accounts (
@@ -218,75 +247,6 @@ FOR EACH ROW
 WHEN (NEW.latitude IS NOT NULL AND NEW.longitude IS NOT NULL)
 EXECUTE FUNCTION update_location();
 
--- revisions and groups
-
--- User group and permission system
-CREATE TYPE permission_level AS ENUM ('read', 'write', 'admin');
-
-CREATE TYPE user_group_name AS ENUM ('administrators', 'moderators');
-
--- Update resource_name enum to include all tables
-CREATE TYPE resource_name AS ENUM (
-    'users', 
-    'sitters', 
-    'dogs', 
-    'bookings', 
-    'reviews', 
-    'dog_breeds', 
-    'sitter_certificates', 
-    'sitter_services',
-    'availability',
-    'unavailable_dates',
-    'admin_users',
-    'oauth_accounts',
-    'user_groups',
-    'user_group_memberships',
-    'group_permissions',
-    'user_permissions',
-    'revisions',
-    'sitter_breed_specialties'
-);
-
-CREATE TYPE action_name AS ENUM ('INSERT', 'UPDATE', 'DELETE');
-
-CREATE TABLE user_groups (
-    id SERIAL PRIMARY KEY,
-    name user_group_name NOT NULL,
-    description TEXT,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
-
--- Link users to groups (many-to-many)
-CREATE TABLE user_group_memberships (
-    user_id INT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    group_id INT NOT NULL REFERENCES user_groups (id) ON DELETE CASCADE,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    PRIMARY KEY (user_id, group_id)
-);
-
--- Permissions by group
-CREATE TABLE group_permissions (
-    id SERIAL PRIMARY KEY,
-    group_id INT NOT NULL REFERENCES user_groups (id) ON DELETE CASCADE,
-    resource resource_name NOT NULL,
-    permission permission_level NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    UNIQUE (group_id, resource)
-);
-
--- Individual user permissions (override group permissions)
-CREATE TABLE user_permissions (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    resource resource_name NOT NULL,
-    permission permission_level NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    UNIQUE (user_id, resource)
-);
-
 -- Revision tracking table - records changes to any entity
 CREATE TABLE revisions (
     id SERIAL PRIMARY KEY,
@@ -464,6 +424,222 @@ CREATE TRIGGER oauth_accounts_revision
 AFTER INSERT OR UPDATE OR DELETE ON oauth_accounts
 FOR EACH ROW EXECUTE FUNCTION record_revision();
 
+CREATE TRIGGER sitter_breed_specialties_revision
+AFTER INSERT OR UPDATE OR DELETE ON sitter_breed_specialties
+FOR EACH ROW EXECUTE FUNCTION record_revision();
+
+CREATE TABLE user_groups (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    permissions JSONB DEFAULT '{}'::JSONB NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT validate_user_group_permissions CHECK (
+        validate_permissions_jsonb (permissions)
+    )
+);
+
+CREATE TABLE user_group_memberships (
+    user_id INT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    group_id INT NOT NULL REFERENCES user_groups (id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    PRIMARY KEY (user_id, group_id)
+);
+
+-- Function to generate a default permissions JSONB based on resource enum
+CREATE OR REPLACE FUNCTION generate_default_permissions(level permission_level)
+RETURNS JSONB AS $$
+DECLARE
+    result JSONB := '{}'::JSONB;
+    res resource_name;
+BEGIN
+    FOR res IN SELECT unnest(enum_range(NULL::resource_name)) LOOP
+        result := result || jsonb_build_object(res::text, level::text);
+    END LOOP;
+    RETURN result;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to validate permissions JSONB against resource_name enum
+CREATE OR REPLACE FUNCTION validate_permissions_jsonb(permissions JSONB)
+RETURNS BOOLEAN AS $$
+DECLARE
+    key TEXT;
+    value TEXT;
+    valid_resources TEXT[] := (SELECT array_agg(e::text) FROM unnest(enum_range(NULL::resource_name)) e);
+    valid_levels TEXT[] := (SELECT array_agg(e::text) FROM unnest(enum_range(NULL::permission_level)) e);
+BEGIN
+    -- Check each key in the JSON
+    FOR key, value IN SELECT * FROM jsonb_each_text(permissions) LOOP
+        -- Key must be a valid resource name
+        IF NOT key = ANY(valid_resources) THEN
+            RAISE EXCEPTION 'Invalid resource name: %', key;
+        END IF;
+        
+        -- Value must be a valid permission level
+        IF NOT value = ANY(valid_levels) THEN
+            RAISE EXCEPTION 'Invalid permission level: %', value;
+        END IF;
+    END LOOP;
+    
+    RETURN TRUE;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Updated function to merge user permissions from their groups using enum types
+CREATE OR REPLACE FUNCTION update_user_permissions_from_groups()
+RETURNS TRIGGER AS $$
+DECLARE
+    user_id_val INT;
+    merged_perms JSONB := '{}'::JSONB;
+    res resource_name;
+    max_level permission_level;
+BEGIN
+    -- Determine which user_id we need to update
+    IF TG_OP = 'DELETE' THEN
+        user_id_val := OLD.user_id;
+    ELSE
+        user_id_val := NEW.user_id;
+    END IF;
+    
+    -- For each possible resource, find the highest permission level
+    FOR res IN SELECT unnest(enum_range(NULL::resource_name)) LOOP
+        -- Get the maximum permission for this resource from all user's groups
+        SELECT 
+            CASE
+                WHEN bool_or(perm_value = 'admin') THEN 'admin'::permission_level
+                WHEN bool_or(perm_value = 'write') THEN 'write'::permission_level
+                WHEN bool_or(perm_value = 'read') THEN 'read'::permission_level
+                ELSE NULL
+            END INTO max_level
+        FROM (
+            SELECT (ug.permissions->>res::text)::permission_level AS perm_value
+            FROM user_groups ug
+            JOIN user_group_memberships ugm ON ug.id = ugm.group_id
+            WHERE ugm.user_id = user_id_val
+            AND ug.permissions ? res::text
+        ) AS perms
+        WHERE perm_value IS NOT NULL;
+        
+        -- Add to merged permissions if we found a permission
+        IF max_level IS NOT NULL THEN
+            merged_perms := merged_perms || jsonb_build_object(res::text, max_level::text);
+        END IF;
+    END LOOP;
+    
+    -- Update the user's permissions
+    UPDATE users u
+    SET permissions = merged_perms
+    WHERE u.id = user_id_val;
+    
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Updated function to handle group permission changes
+CREATE OR REPLACE FUNCTION update_users_on_group_change()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Skip if permissions didn't change
+    IF NEW.permissions = OLD.permissions THEN
+        RETURN NULL;
+    END IF;
+    
+    -- Update all users in this group by refreshing their permissions
+    -- We do this by calling our update function for each membership
+    FOR user_id_val IN 
+        SELECT user_id 
+        FROM user_group_memberships 
+        WHERE group_id = NEW.id
+    LOOP
+        -- Get any membership for this user
+        PERFORM update_user_permissions(user_id_val);
+    END LOOP;
+    
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Helper function to update a user's permissions
+CREATE OR REPLACE FUNCTION update_user_permissions(user_id_val INT)
+RETURNS VOID AS $$
+DECLARE
+    merged_perms JSONB := '{}'::JSONB;
+    res resource_name;
+    max_level permission_level;
+BEGIN
+    -- For each possible resource, find the highest permission level
+    FOR res IN SELECT unnest(enum_range(NULL::resource_name)) LOOP
+        -- Get the maximum permission for this resource from all user's groups
+        SELECT 
+            CASE
+                WHEN bool_or(perm_value = 'admin') THEN 'admin'::permission_level
+                WHEN bool_or(perm_value = 'write') THEN 'write'::permission_level
+                WHEN bool_or(perm_value = 'read') THEN 'read'::permission_level
+                ELSE NULL
+            END INTO max_level
+        FROM (
+            SELECT (ug.permissions->>res::text)::permission_level AS perm_value
+            FROM user_groups ug
+            JOIN user_group_memberships ugm ON ug.id = ugm.group_id
+            WHERE ugm.user_id = user_id_val
+            AND ug.permissions ? res::text
+        ) AS perms
+        WHERE perm_value IS NOT NULL;
+        
+        -- Add to merged permissions if we found a permission
+        IF max_level IS NOT NULL THEN
+            merged_perms := merged_perms || jsonb_build_object(res::text, max_level::text);
+        END IF;
+    END LOOP;
+    
+    -- Update the user's permissions
+    UPDATE users u
+    SET permissions = merged_perms
+    WHERE u.id = user_id_val;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_user_permissions_on_membership_change
+AFTER INSERT OR UPDATE OR DELETE ON user_group_memberships
+FOR EACH ROW EXECUTE FUNCTION update_user_permissions_from_groups();
+
+CREATE TRIGGER update_users_on_group_permission_change
+AFTER UPDATE OF permissions ON user_groups
+FOR EACH ROW EXECUTE FUNCTION update_users_on_group_change();
+
+-- Add the default groups with permissions from the enum types
+INSERT INTO
+    user_groups (
+        name,
+        description,
+        permissions
+    )
+VALUES (
+        'administrator',
+        'Full access to all resources',
+        generate_default_permissions ('admin'::permission_level)
+    ),
+    (
+        'moderator',
+        'Can review and moderate content',
+        jsonb_build_object(
+            'users'::resource_name::text, 'read'::permission_level::text,
+            'sitters'::resource_name::text, 'write'::permission_level::text,
+            'dogs'::resource_name::text, 'write'::permission_level::text,
+            'bookings'::resource_name::text, 'write'::permission_level::text,
+            'reviews'::resource_name::text, 'write'::permission_level::text,
+            'dog_breeds'::resource_name::text, 'write'::permission_level::text,
+            'sitter_certificates'::resource_name::text, 'write'::permission_level::text,
+            'sitter_services'::resource_name::text, 'write'::permission_level::text,
+            'availability'::resource_name::text, 'write'::permission_level::text,
+            'unavailable_dates'::resource_name::text, 'write'::permission_level::text,
+            'sitter_breed_specialties'::resource_name::text, 'write'::permission_level::text,
+            'revisions'::resource_name::text, 'read'::permission_level::text
+        )
+    );
+
 CREATE TRIGGER user_groups_revision
 AFTER INSERT OR UPDATE OR DELETE ON user_groups
 FOR EACH ROW EXECUTE FUNCTION record_revision();
@@ -471,93 +647,6 @@ FOR EACH ROW EXECUTE FUNCTION record_revision();
 CREATE TRIGGER user_group_memberships_revision
 AFTER INSERT OR UPDATE OR DELETE ON user_group_memberships
 FOR EACH ROW EXECUTE FUNCTION record_revision();
-
-CREATE TRIGGER group_permissions_revision
-AFTER INSERT OR UPDATE OR DELETE ON group_permissions
-FOR EACH ROW EXECUTE FUNCTION record_revision();
-
-CREATE TRIGGER user_permissions_revision
-AFTER INSERT OR UPDATE OR DELETE ON user_permissions
-FOR EACH ROW EXECUTE FUNCTION record_revision();
-
-CREATE TRIGGER sitter_breed_specialties_revision
-AFTER INSERT OR UPDATE OR DELETE ON sitter_breed_specialties
-FOR EACH ROW EXECUTE FUNCTION record_revision();
-
--- Insert default user groups
-INSERT INTO
-    user_groups (name, description)
-VALUES (
-        'administrator',
-        'Full access to all resources'
-    ),
-    (
-        'moderator',
-        'Can review and moderate content'
-    ),
-    (
-        'sitter',
-        'Dog sitters with access to their own data and bookings'
-    ),
-    (
-        'client',
-        'Pet owners with access to their own data and bookings'
-    );
-
--- Set up permissions for administrators (full access to ALL tables)
-INSERT INTO
-    group_permissions (
-        group_id,
-        resource,
-        permission
-    )
-SELECT (
-        SELECT id
-        FROM user_groups
-        WHERE
-            name = 'administrator'
-    ), resource, 'admin'::permission_level
-FROM unnest(
-        enum_range(NULL::resource_name)
-    ) as resource;
-
--- Moderator permissions - write access to most tables, but only read access to some
--- and NO access to admin_users and oauth_accounts
-INSERT INTO
-    group_permissions (
-        group_id,
-        resource,
-        permission
-    )
-    -- First, give write access to these resources
-SELECT (
-        SELECT id
-        FROM user_groups
-        WHERE
-            name = 'moderator'
-    ), resource, 'write'::permission_level
-FROM unnest(
-        ARRAY[
-            'sitters', 'sitter_certificates', 'sitter_services', 'availability', 'unavailable_dates', 'dog_breeds', 'reviews', 'dogs', 'bookings', 'sitter_breed_specialties'
-        ]::resource_name[]
-    ) as resource;
-
--- Now, give read-only access to these resources
-INSERT INTO
-    group_permissions (
-        group_id,
-        resource,
-        permission
-    )
-SELECT (
-        SELECT id
-        FROM user_groups
-        WHERE
-            name = 'moderator'
-    ), resource, 'read'::permission_level
-FROM unnest(
-        ARRAY['users',]::resource_name[]
-    ) as resource;
 
 -- Sitter and Clients don't need permissions
 -- they can't change other users' data

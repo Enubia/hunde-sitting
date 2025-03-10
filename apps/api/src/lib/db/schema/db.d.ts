@@ -31,10 +31,6 @@ export type LocationType = "client_home" | "other" | "park" | "sitter_home";
 
 export type Numeric = ColumnType<string, number | string, number | string>;
 
-export type PermissionLevel = "admin" | "read" | "write";
-
-export type ResourceName = "availability" | "bookings" | "dog_breeds" | "dogs" | "group_permissions" | "oauth_accounts" | "reviews" | "revisions" | "sitter_breed_specialties" | "sitter_certificates" | "sitter_services" | "sitters" | "unavailable_dates" | "user_group_memberships" | "user_groups" | "user_permissions" | "users";
-
 export type ServiceType = "boarding" | "daycare" | "dog_walking" | "grooming" | "overnight_stay" | "pet_taxi" | "training" | "vet_visits";
 
 export type Sex = "female" | "male";
@@ -42,8 +38,6 @@ export type Sex = "female" | "male";
 export type SizeCategory = "giant" | "large" | "medium" | "small" | "tiny";
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
-
-export type UserGroupName = "administrators" | "moderators";
 
 export type VaccinationStatus = "fully_vaccinated" | "not_vaccinated" | "partially_vaccinated" | "unknown";
 
@@ -82,7 +76,6 @@ export interface DogBreeds {
   name: string;
   requires_certificate: Generated<boolean>;
   size_category: SizeCategory;
-  special_care_requirements: string | null;
 }
 
 export interface Dogs {
@@ -97,8 +90,8 @@ export interface Dogs {
   name: string;
   owner_id: number;
   photo_url: string | null;
-  sex: Sex | null;
-  special_needs: string | null;
+  sex: Sex;
+  special_care_requirements: string | null;
   temperament: string | null;
   updated_at: Generated<Timestamp>;
   vaccination_status: Generated<VaccinationStatus>;
@@ -123,15 +116,6 @@ export interface GeometryColumns {
   f_table_schema: string | null;
   srid: number | null;
   type: string | null;
-}
-
-export interface GroupPermissions {
-  created_at: Generated<Timestamp>;
-  group_id: number;
-  id: Generated<number>;
-  permission: PermissionLevel;
-  resource: ResourceName;
-  updated_at: Generated<Timestamp>;
 }
 
 export interface OauthAccounts {
@@ -247,17 +231,9 @@ export interface UserGroups {
   created_at: Generated<Timestamp>;
   description: string | null;
   id: Generated<number>;
-  name: UserGroupName;
+  name: string;
+  permissions: Generated<Json>;
   updated_at: Generated<Timestamp>;
-}
-
-export interface UserPermissions {
-  created_at: Generated<Timestamp>;
-  id: Generated<number>;
-  permission: PermissionLevel;
-  resource: ResourceName;
-  updated_at: Generated<Timestamp>;
-  user_id: number;
 }
 
 export interface Users {
@@ -275,6 +251,7 @@ export interface Users {
   location: string | null;
   longitude: Numeric | null;
   name: string;
+  permissions: Generated<Json>;
   phone: string | null;
   postal_code: string | null;
   state: string | null;
@@ -288,7 +265,6 @@ export interface DB {
   dogs: Dogs;
   geography_columns: GeographyColumns;
   geometry_columns: GeometryColumns;
-  group_permissions: GroupPermissions;
   oauth_accounts: OauthAccounts;
   reviews: Reviews;
   revisions: Revisions;
@@ -300,6 +276,5 @@ export interface DB {
   unavailable_dates: UnavailableDates;
   user_group_memberships: UserGroupMemberships;
   user_groups: UserGroups;
-  user_permissions: UserPermissions;
   users: Users;
 }

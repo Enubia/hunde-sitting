@@ -1,15 +1,17 @@
-import type { Kysely } from 'kysely';
+import type { Insertable, Kysely } from 'kysely';
 
 import { faker } from '@faker-js/faker';
 import { sql } from 'kysely';
 
+import type { DogBreeds } from '../schema/db';
 import type { DB } from '../schema/schema';
 
-// updated for schema with INT IDs
 export async function seed(db: Kysely<DB>): Promise<void> {
     try {
+        console.log('Starting to seed default and dummy data...');
+
         // Temporarily disable triggers during bulk insert
-        await db.executeQuery(sql`SET session_replication_role = 'origin'`.compile(db));
+        await db.executeQuery(sql`SET session_replication_role = 'replica'`.compile(db));
 
         // Track created IDs for relationships
         const userIds: number[] = [];
@@ -17,56 +19,184 @@ export async function seed(db: Kysely<DB>): Promise<void> {
         const dogBreedIds: number[] = [];
         const dogIds: number[] = [];
 
-        // Seed dog breeds first (they have no dependencies)
-        const breedNames = [
-            'Labrador Retriever',
-            'German Shepherd',
-            'Golden Retriever',
-            'French Bulldog',
-            'Beagle',
-            'Poodle',
-            'Rottweiler',
-            'Dachshund',
-            'Corgi',
-            'Australian Shepherd',
-            'Shih Tzu',
-            'Great Dane',
-            'Doberman',
-            'Border Collie',
-            'Boxer',
+        // Add default dog breeds
+        console.log('Creating default dog breeds...');
+
+        const breeds: Insertable<DogBreeds>[] = [
+            { name: 'Labrador Retriever', size_category: 'large', requires_certificate: false },
+            { name: 'German Shepherd', size_category: 'large', requires_certificate: false },
+            { name: 'Golden Retriever', size_category: 'large', requires_certificate: false },
+            { name: 'French Bulldog', size_category: 'small', requires_certificate: false },
+            { name: 'Beagle', size_category: 'medium', requires_certificate: false },
+            { name: 'Poodle', size_category: 'medium', requires_certificate: false },
+            { name: 'Rottweiler', size_category: 'large', requires_certificate: true },
+            { name: 'Dachshund', size_category: 'small', requires_certificate: false },
+            { name: 'Corgi', size_category: 'small', requires_certificate: false },
+            { name: 'Australian Shepherd', size_category: 'medium', requires_certificate: false },
+            { name: 'Shih Tzu', size_category: 'tiny', requires_certificate: false },
+            { name: 'Great Dane', size_category: 'giant', requires_certificate: false },
+            { name: 'Doberman', size_category: 'large', requires_certificate: true },
+            { name: 'Border Collie', size_category: 'medium', requires_certificate: false },
+            { name: 'Boxer', size_category: 'large', requires_certificate: false },
+            { name: 'Chihuahua', size_category: 'tiny', requires_certificate: false },
+            { name: 'Siberian Husky', size_category: 'large', requires_certificate: false },
+            { name: 'Yorkshire Terrier', size_category: 'tiny', requires_certificate: false },
+            { name: 'Bulldog', size_category: 'medium', requires_certificate: false },
+            { name: 'Bernese Mountain Dog', size_category: 'giant', requires_certificate: false },
         ];
 
-        const sizeCategories: ('tiny' | 'small' | 'medium' | 'large' | 'giant')[] = [
-            'tiny',
-            'small',
-            'medium',
-            'large',
-            'giant',
-        ];
+        for (const breed of breeds) {
+            const [result] = await db.insertInto('dog_breeds')
+                .values(breed)
+                .onConflict(oc => oc.column('name').doNothing())
+                .returning('id')
+                .execute();
 
-        // Insert dog breeds
-        for (const breedName of breedNames) {
-            const size = sizeCategories[Math.floor(Math.random() * sizeCategories.length)];
-            const specialCare = Math.random() > 0.7
-                ? faker.lorem.paragraph(1)
-                : null;
-            const requiresCertificate = Math.random() > 0.9;
+            if (result) {
+                dogBreedIds.push(result.id);
+            }
+        }
 
-            const [breed] = await db
-                .insertInto('dog_breeds')
+        // Get existing breed IDs if we didn't get them from insert (due to conflict)
+        if (dogBreedIds.length === 0) {
+            const existingBreeds = await db.selectFrom('dog_breeds')
+                .select(['id'])
+                .execute();
+
+            dogBreedIds.push(...existingBreeds.map(breed => breed.id));
+        }
+
+        // Create admin user (if not exists)
+        console.log('Creating admin user...');
+
+        const existingAdmin = await db.selectFrom('users')
+            .where('email', '=', 'admin@hundesitting.com')
+            .select('id')
+            .executeTakeFirst();
+
+        let adminUserId: number;
+
+        if (!existingAdmin) {
+            const [adminUser] = await db.insertInto('users')
                 .values({
-                    name: breedName,
-                    size_category: size,
-                    special_care_requirements: specialCare,
-                    requires_certificate: requiresCertificate,
+                    email: 'admin@hundesitting.com',
+                    name: 'System Administrator',
+                    avatar_url: faker.image.avatar(),
+                    phone: faker.phone.number(),
+                    bio: 'System administrator with full access to all features',
+                    address: faker.location.streetAddress(),
+                    city: faker.location.city(),
+                    state: faker.location.state(),
+                    postal_code: faker.location.zipCode(),
+                    country: faker.location.country(),
+                    latitude: Number.parseFloat(faker.location.latitude().toString()),
+                    longitude: Number.parseFloat(faker.location.longitude().toString()),
+                    is_active: true,
+                    is_email_verified: true,
+                    permissions: '{}',
                 })
                 .returning('id')
                 .execute();
 
-            dogBreedIds.push(breed.id);
+            adminUserId = adminUser.id;
+        } else {
+            adminUserId = existingAdmin.id;
         }
 
-        // Create 20 users (both clients and potential sitters)
+        userIds.push(adminUserId);
+
+        // Get admin group ID
+        const adminGroup = await db.selectFrom('user_groups')
+            .where('name', '=', 'administrator')
+            .select('id')
+            .executeTakeFirst();
+
+        if (adminGroup) {
+            // Check if admin user is already in admin group
+            const existingMembership = await db.selectFrom('user_group_memberships')
+                .where('user_id', '=', adminUserId)
+                .where('group_id', '=', adminGroup.id)
+                .select('user_id')
+                .executeTakeFirst();
+
+            if (!existingMembership) {
+                // Add admin user to admin group
+                await db.insertInto('user_group_memberships')
+                    .values({
+                        user_id: adminUserId,
+                        group_id: adminGroup.id,
+                    })
+                    .execute();
+            }
+        }
+
+        // Create moderator user (if not exists)
+        console.log('Creating moderator user...');
+
+        const existingMod = await db.selectFrom('users')
+            .where('email', '=', 'moderator@hundesitting.com')
+            .select('id')
+            .executeTakeFirst();
+
+        let modUserId: number;
+
+        if (!existingMod) {
+            const [modUser] = await db.insertInto('users')
+                .values({
+                    email: 'moderator@hundesitting.com',
+                    name: 'Content Moderator',
+                    avatar_url: faker.image.avatar(),
+                    phone: faker.phone.number(),
+                    bio: 'Content moderator responsible for reviewing and managing platform content',
+                    address: faker.location.streetAddress(),
+                    city: faker.location.city(),
+                    state: faker.location.state(),
+                    postal_code: faker.location.zipCode(),
+                    country: faker.location.country(),
+                    latitude: Number.parseFloat(faker.location.latitude().toString()),
+                    longitude: Number.parseFloat(faker.location.longitude().toString()),
+                    is_active: true,
+                    is_email_verified: true,
+                    permissions: '{}',
+                })
+                .returning('id')
+                .execute();
+
+            modUserId = modUser.id;
+        } else {
+            modUserId = existingMod.id;
+        }
+
+        userIds.push(modUserId);
+
+        // Get moderator group ID
+        const modGroup = await db.selectFrom('user_groups')
+            .where('name', '=', 'moderator')
+            .select('id')
+            .executeTakeFirst();
+
+        if (modGroup) {
+            // Check if moderator user is already in moderator group
+            const existingMembership = await db.selectFrom('user_group_memberships')
+                .where('user_id', '=', modUserId)
+                .where('group_id', '=', modGroup.id)
+                .select('user_id')
+                .executeTakeFirst();
+
+            if (!existingMembership) {
+                // Add moderator user to moderator group
+                await db.insertInto('user_group_memberships')
+                    .values({
+                        user_id: modUserId,
+                        group_id: modGroup.id,
+                    })
+                    .execute();
+            }
+        }
+
+        // Create regular users
+        console.log('Creating regular users...');
+
         for (let i = 0; i < 20; i++) {
             const firstName = faker.person.firstName();
             const lastName = faker.person.lastName();
@@ -88,6 +218,7 @@ export async function seed(db: Kysely<DB>): Promise<void> {
                     longitude: Number.parseFloat(faker.location.longitude().toString()),
                     is_active: true,
                     is_email_verified: Math.random() > 0.2, // 80% verified
+                    permissions: '{}',
                 })
                 .returning('id')
                 .execute();
@@ -125,7 +256,7 @@ export async function seed(db: Kysely<DB>): Promise<void> {
                         .insertInto('sitter_services')
                         .values({
                             sitter_id: sitter.id,
-                            service_name: shuffledServices[j] as any, // Cast to any since it's an enum
+                            service_name: shuffledServices[j] as any,
                             description: faker.lorem.paragraph(),
                             price: Number.parseFloat((Math.random() * 50 + 15).toFixed(2)),
                             is_available: Math.random() > 0.1,
@@ -183,10 +314,30 @@ export async function seed(db: Kysely<DB>): Promise<void> {
                         })
                         .execute();
                 }
+
+                // Create unavailable dates (0-3 per sitter)
+                const numUnavailablePeriods = Math.floor(Math.random() * 4);
+                for (let j = 0; j < numUnavailablePeriods; j++) {
+                    const startDate = faker.date.future();
+                    const endDate = new Date(startDate);
+                    endDate.setDate(endDate.getDate() + Math.floor(Math.random() * 14) + 1); // 1-14 days
+
+                    await db
+                        .insertInto('unavailable_dates')
+                        .values({
+                            sitter_id: sitter.id,
+                            start_date: startDate.toISOString(),
+                            end_date: endDate.toISOString(),
+                            reason: Math.random() > 0.5 ? faker.lorem.sentence() : null,
+                        })
+                        .execute();
+                }
             }
         }
 
         // Create dogs (1-3 per user)
+        console.log('Creating dogs...');
+
         for (const userId of userIds) {
             const numDogs = Math.floor(Math.random() * 3) + 1;
 
@@ -206,7 +357,7 @@ export async function seed(db: Kysely<DB>): Promise<void> {
                         weight_kg: Number.parseFloat((Math.random() * 40 + 2).toFixed(2)),
                         sex: Math.random() > 0.5 ? 'male' : 'female',
                         is_neutered: Math.random() > 0.3,
-                        special_needs: Math.random() > 0.8 ? faker.lorem.sentence() : null,
+                        special_care_requirements: Math.random() > 0.8 ? faker.lorem.sentence() : null,
                         medical_conditions: Math.random() > 0.9 ? faker.lorem.sentence() : null,
                         vaccination_status: ['fully_vaccinated', 'partially_vaccinated', 'not_vaccinated', 'unknown'][Math.floor(Math.random() * 4)] as any,
                         temperament: faker.lorem.sentence(),
@@ -219,7 +370,9 @@ export async function seed(db: Kysely<DB>): Promise<void> {
             }
         }
 
-        // Create bookings (past, current, and future)
+        // Create bookings between sitters and dog owners
+        console.log('Creating bookings...');
+
         const locationTypes = ['sitter_home', 'client_home', 'park', 'other'];
 
         // Create 40 random bookings
@@ -340,6 +493,7 @@ export async function seed(db: Kysely<DB>): Promise<void> {
                         reviewee_id: sitterRecord.user_id,
                         rating: Math.floor(Math.random() * 5) + 1, // 1-5 stars
                         comment: Math.random() > 0.2 ? faker.lorem.paragraph() : null,
+                        created_at: new Date(endDate.getTime() + (24 * 60 * 60 * 1000)).toISOString(), // 1 day after booking end
                     })
                     .execute();
 
@@ -353,46 +507,47 @@ export async function seed(db: Kysely<DB>): Promise<void> {
                             reviewee_id: clientId,
                             rating: Math.floor(Math.random() * 3) + 3, // 3-5 stars (sitters tend to be nice)
                             comment: Math.random() > 0.3 ? faker.lorem.paragraph() : null,
+                            created_at: new Date(endDate.getTime() + (2 * 24 * 60 * 60 * 1000)).toISOString(), // 2 days after booking end
                         })
                         .execute();
                 }
             }
         }
 
-        // Create admin user
-        const [adminUser] = await db
-            .insertInto('users')
-            .values({
-                email: 'admin@hundesitting.com',
-                name: 'System Administrator',
-                is_active: true,
-                is_email_verified: true,
-            })
-            .returning('id')
-            .execute();
+        // Create OAuth accounts for some users
+        console.log('Creating OAuth accounts...');
 
-        // Add the admin user to administrators group
-        const adminGroup = await db
-            .selectFrom('user_groups')
-            .select('id')
-            .where('name', '=', 'administrators')
-            .executeTakeFirstOrThrow();
+        const oauthProviders = ['google', 'facebook', 'apple', 'github'];
 
-        await db
-            .insertInto('user_group_memberships')
-            .values({
-                user_id: adminUser.id,
-                group_id: adminGroup.id,
-            })
-            .execute();
+        for (const userId of userIds) {
+            // 30% chance to have an OAuth account
+            if (Math.random() > 0.7) {
+                const provider = oauthProviders[Math.floor(Math.random() * oauthProviders.length)];
 
-        console.log('Seed completed successfully!');
+                await db
+                    .insertInto('oauth_accounts')
+                    .values({
+                        user_id: userId,
+                        provider: provider as any,
+                        provider_user_id: faker.string.uuid(),
+                        access_token: faker.string.alphanumeric(64),
+                        refresh_token: faker.string.alphanumeric(64),
+                        expires_at: faker.date.future(),
+                    })
+                    .execute();
+            }
+        }
+
+        console.log('Seed data creation complete!');
         console.log(`Created ${userIds.length} users`);
         console.log(`Created ${sitterIds.length} sitters`);
         console.log(`Created ${dogIds.length} dogs`);
         console.log(`Created ${dogBreedIds.length} dog breeds`);
+    } catch (error) {
+        console.error('Error seeding data:', error);
+        throw error;
     } finally {
-    // Re-enable triggers
+        // Re-enable triggers
         await db.executeQuery(sql`SET session_replication_role = 'origin'`.compile(db));
     }
 }
