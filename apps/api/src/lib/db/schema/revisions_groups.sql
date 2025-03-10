@@ -26,63 +26,63 @@ CREATE TYPE resource_name AS ENUM (
 CREATE TYPE action_name AS ENUM ('INSERT', 'UPDATE', 'DELETE');
 
 CREATE TABLE user_groups (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
     name VARCHAR(100) NOT NULL UNIQUE,
     description TEXT,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 -- Link users to groups (many-to-many)
 CREATE TABLE user_group_memberships (
-    user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    group_id UUID NOT NULL REFERENCES user_groups (id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    group_id UUID NOT NULL REFERENCES user_groups(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (user_id, group_id)
 );
 
 -- Permissions by group
 CREATE TABLE group_permissions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
-    group_id UUID NOT NULL REFERENCES user_groups (id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    group_id UUID NOT NULL REFERENCES user_groups(id) ON DELETE CASCADE,
     resource resource_name NOT NULL,
     permission permission_level NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     UNIQUE (group_id, resource)
 );
 
 -- Individual user permissions (override group permissions)
 CREATE TABLE user_permissions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
-    user_id UUID NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     resource resource_name NOT NULL,
     permission permission_level NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,,
-    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
     UNIQUE (user_id, resource)
 );
 
 -- Revision tracking table - records changes to any entity
 CREATE TABLE revisions (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid (),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid () NOT NULL,
     table_name VARCHAR(100) NOT NULL,
-    record_id UUID NOT NULL,
-    user_id UUID REFERENCES users (id) ON DELETE SET NULL, -- Who made the change
+    record_id TEXT NOT NULL, -- Changed from UUID to TEXT
+    user_id UUID REFERENCES users (id) ON DELETE SET NULL,
     action action_name NOT NULL,
-    old_values JSONB, -- Previous values in case of update/delete
-    new_values JSONB, -- New values in case of insert/update
-    changed_fields TEXT [], -- Array of field names that were changed (for quick filtering)
-    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    old_values JSONB,
+    new_values JSONB,
+    changed_fields TEXT [],
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 -- Indexes for revisions table to improve query performance
-CREATE INDEX idx_revisions_table_record ON revisions (table_name, record_id);
-CREATE INDEX idx_revisions_user_id ON revisions (user_id);
-CREATE INDEX idx_revisions_created_at ON revisions (created_at);
-CREATE INDEX idx_revisions_changed_fields ON revisions USING GIN (changed_fields);
+CREATE INDEX idx_revisions_table_record ON revisions(table_name, record_id);
+CREATE INDEX idx_revisions_user_id ON revisions(user_id);
+CREATE INDEX idx_revisions_created_at ON revisions(created_at);
+CREATE INDEX idx_revisions_changed_fields ON revisions USING GIN(changed_fields);
 
--- Function to create a revision record
+-- Then update the record_revision function to handle composite keys
 CREATE OR REPLACE FUNCTION record_revision()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -90,9 +90,9 @@ DECLARE
     new_values JSONB := NULL;
     changed_fields TEXT[] := ARRAY[]::TEXT[];
     current_user_id UUID;
+    record_identifier TEXT;
 BEGIN
     -- Try to get current user ID from application context
-    -- This assumes your application sets this value using SET LOCAL
     BEGIN
         current_user_id := NULLIF(current_setting('app.current_user_id', TRUE), '');
     EXCEPTION WHEN OTHERS THEN
@@ -129,6 +129,37 @@ BEGIN
         FROM jsonb_each(old_values);
     END IF;
 
+    -- Determine record identifier based on the table structure
+    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+        -- For tables with a regular 'id' column
+        IF new_values ? 'id' THEN
+            record_identifier := new_values->>'id';
+        -- For user_group_memberships table (composite key)
+        ELSIF TG_TABLE_NAME = 'user_group_memberships' THEN
+            record_identifier := CONCAT(new_values->>'user_id', ':', new_values->>'group_id');
+        -- For sitter_breed_specialties table (composite key)
+        ELSIF TG_TABLE_NAME = 'sitter_breed_specialties' THEN
+            record_identifier := CONCAT(new_values->>'sitter_id', ':', new_values->>'breed_id');
+        -- Other composite key tables can be added here
+        ELSE
+            record_identifier := 'unknown';
+        END IF;
+    ELSE -- DELETE operation
+        -- For tables with a regular 'id' column
+        IF old_values ? 'id' THEN
+            record_identifier := old_values->>'id';
+        -- For user_group_memberships table (composite key)
+        ELSIF TG_TABLE_NAME = 'user_group_memberships' THEN
+            record_identifier := CONCAT(old_values->>'user_id', ':', old_values->>'group_id');
+        -- For sitter_breed_specialties table (composite key)
+        ELSIF TG_TABLE_NAME = 'sitter_breed_specialties' THEN
+            record_identifier := CONCAT(old_values->>'sitter_id', ':', old_values->>'breed_id');
+        -- Other composite key tables can be added here
+        ELSE
+            record_identifier := 'unknown';
+        END IF;
+    END IF;
+
     -- Insert the revision record
     INSERT INTO revisions(
         table_name, 
@@ -140,12 +171,9 @@ BEGIN
         changed_fields
     ) VALUES (
         TG_TABLE_NAME,
-        CASE 
-            WHEN TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN (new_values->>'id')::UUID
-            ELSE (old_values->>'id')::UUID
-        END,
+        record_identifier, -- Now using our composite key string when needed
         current_user_id,
-        TG_OP,
+        TG_OP::action_name,
         old_values,
         new_values,
         changed_fields

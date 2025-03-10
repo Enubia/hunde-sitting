@@ -77,15 +77,15 @@ export async function up(db: Kysely<any>): Promise<void> {
     // Create revisions table
     await db.schema
         .createTable('revisions')
-        .addColumn('id', 'uuid', col => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
+        .addColumn('id', 'uuid', col => col.primaryKey().defaultTo(sql`gen_random_uuid()`).notNull())
         .addColumn('table_name', 'varchar(100)', col => col.notNull())
-        .addColumn('record_id', 'uuid', col => col.notNull())
+        .addColumn('record_id', 'text', col => col.notNull()) // Changed from UUID to TEXT
         .addColumn('user_id', 'uuid', col => col.references('users.id').onDelete('set null'))
         .addColumn('action', sql`action_name`, col => col.notNull())
         .addColumn('old_values', 'jsonb')
         .addColumn('new_values', 'jsonb')
         .addColumn('changed_fields', sql`text[]`)
-        .addColumn('created_at', 'timestamptz', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+        .addColumn('created_at', 'timestamptz', col => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
         .execute();
 
     // Create indexes for revisions table
@@ -103,9 +103,9 @@ export async function up(db: Kysely<any>): Promise<void> {
         new_values JSONB := NULL;
         changed_fields TEXT[] := ARRAY[]::TEXT[];
         current_user_id UUID;
+        record_identifier TEXT;
     BEGIN
         -- Try to get current user ID from application context
-        -- This assumes your application sets this value using SET LOCAL
         BEGIN
             current_user_id := NULLIF(current_setting('app.current_user_id', TRUE), '');
         EXCEPTION WHEN OTHERS THEN
@@ -142,6 +142,37 @@ export async function up(db: Kysely<any>): Promise<void> {
             FROM jsonb_each(old_values);
         END IF;
 
+        -- Determine record identifier based on the table structure
+        IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+            -- For tables with a regular 'id' column
+            IF new_values ? 'id' THEN
+                record_identifier := new_values->>'id';
+            -- For user_group_memberships table (composite key)
+            ELSIF TG_TABLE_NAME = 'user_group_memberships' THEN
+                record_identifier := CONCAT(new_values->>'user_id', ':', new_values->>'group_id');
+            -- For sitter_breed_specialties table (composite key)
+            ELSIF TG_TABLE_NAME = 'sitter_breed_specialties' THEN
+                record_identifier := CONCAT(new_values->>'sitter_id', ':', new_values->>'breed_id');
+            -- Other composite key tables can be added here
+            ELSE
+                record_identifier := 'unknown-' || md5(new_values::text);
+            END IF;
+        ELSE -- DELETE operation
+            -- For tables with a regular 'id' column
+            IF old_values ? 'id' THEN
+                record_identifier := old_values->>'id';
+            -- For user_group_memberships table (composite key)
+            ELSIF TG_TABLE_NAME = 'user_group_memberships' THEN
+                record_identifier := CONCAT(old_values->>'user_id', ':', old_values->>'group_id');
+            -- For sitter_breed_specialties table (composite key)
+            ELSIF TG_TABLE_NAME = 'sitter_breed_specialties' THEN
+                record_identifier := CONCAT(old_values->>'sitter_id', ':', old_values->>'breed_id');
+            -- Other composite key tables can be added here
+            ELSE
+                record_identifier := 'unknown-' || md5(old_values::text);
+            END IF;
+        END IF;
+
         -- Insert the revision record
         INSERT INTO revisions(
             table_name, 
@@ -153,10 +184,7 @@ export async function up(db: Kysely<any>): Promise<void> {
             changed_fields
         ) VALUES (
             TG_TABLE_NAME,
-            CASE 
-                WHEN TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN (new_values->>'id')::UUID
-                ELSE (old_values->>'id')::UUID
-            END,
+            record_identifier, -- Now using our composite key string when needed
             current_user_id,
             TG_OP::action_name,
             old_values,
@@ -197,10 +225,10 @@ export async function up(db: Kysely<any>): Promise<void> {
 
     for (const table of tables) {
         await sql`
-        CREATE TRIGGER ${sql.raw(`${table}_revision`)}
-        AFTER INSERT OR UPDATE OR DELETE ON ${sql.raw(table)}
-        FOR EACH ROW EXECUTE FUNCTION record_revision()
-        `.execute(db);
+    CREATE TRIGGER ${sql.raw(`${table}_revision`)}
+    AFTER INSERT OR UPDATE OR DELETE ON ${sql.raw(`"${table}"`)}
+    FOR EACH ROW EXECUTE FUNCTION record_revision()
+    `.execute(db);
     }
 
     // Insert default user groups
@@ -317,7 +345,7 @@ export async function down(db: Kysely<any>): Promise<void> {
     ];
 
     for (const table of tables) {
-        await sql`DROP TRIGGER IF EXISTS ${sql.raw(`${table}_revision`)} ON ${sql.raw(table)}`.execute(db);
+        await sql`DROP TRIGGER IF EXISTS ${sql.raw(`${table}_revision`)} ON ${sql.raw(`"${table}"`)}`.execute(db);
     }
 
     // Drop function

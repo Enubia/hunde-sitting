@@ -46,6 +46,7 @@ export default antfu(
         files: ['**/migrations/**', '**/seeds/**'],
 
         rules: {
+            'no-console': 'off',
             'unused-imports/no-unused-vars': 'off',
         },
     },

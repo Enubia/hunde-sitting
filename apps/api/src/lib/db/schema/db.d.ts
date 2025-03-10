@@ -88,7 +88,7 @@ export interface DogBreeds {
   created_at: Generated<Timestamp>;
   id: Generated<string>;
   name: string;
-  requires_certificate: Generated<boolean | null>;
+  requires_certificate: Generated<boolean>;
   size_category: SizeCategory;
   special_care_requirements: string | null;
 }
@@ -101,7 +101,7 @@ export interface Dogs {
   id: Generated<string>;
   is_neutered: boolean | null;
   medical_conditions: string | null;
-  mixed_breed: Generated<boolean | null>;
+  mixed_breed: Generated<boolean>;
   name: string;
   owner_id: string;
   photo_url: string | null;
@@ -109,7 +109,7 @@ export interface Dogs {
   special_needs: string | null;
   temperament: string | null;
   updated_at: Generated<Timestamp>;
-  vaccination_status: Generated<VaccinationStatus | null>;
+  vaccination_status: Generated<VaccinationStatus>;
   weight_kg: Numeric | null;
 }
 
@@ -181,7 +181,7 @@ export interface SitterBreedSpecialties {
   additional_notes: string | null;
   breed_id: string;
   created_at: Generated<Timestamp>;
-  experience_years: Generated<number | null>;
+  experience_years: Generated<number>;
   sitter_id: string;
 }
 
@@ -196,19 +196,19 @@ export interface SitterCertificates {
   issuing_organization: string;
   sitter_id: string;
   updated_at: Generated<Timestamp>;
-  verification_status: Generated<VerificationStatus | null>;
+  verification_status: Generated<VerificationStatus>;
 }
 
 export interface Sitters {
   bio: string | null;
-  can_host_at_home: Generated<boolean | null>;
+  can_host_at_home: Generated<boolean>;
   created_at: Generated<Timestamp>;
   daily_rate: Numeric | null;
   hourly_rate: Numeric | null;
   id: Generated<string>;
-  is_available: Generated<boolean | null>;
+  is_available: Generated<boolean>;
   last_location_update: Timestamp | null;
-  max_dogs_at_once: Generated<number | null>;
+  max_dogs_at_once: Generated<number>;
   service_radius_km: Numeric | null;
   updated_at: Generated<Timestamp>;
   user_id: string;
@@ -220,7 +220,7 @@ export interface SitterServices {
   created_at: Generated<Timestamp>;
   description: string | null;
   id: Generated<string>;
-  is_available: Generated<boolean | null>;
+  is_available: Generated<boolean>;
   price: Numeric | null;
   service_name: ServiceType;
   sitter_id: string;
@@ -277,8 +277,8 @@ export interface Users {
   created_at: Generated<Timestamp>;
   email: string;
   id: Generated<string>;
-  is_active: Generated<boolean | null>;
-  is_email_verified: Generated<boolean | null>;
+  is_active: Generated<boolean>;
+  is_email_verified: Generated<boolean>;
   latitude: Numeric | null;
   location: string | null;
   longitude: Numeric | null;
