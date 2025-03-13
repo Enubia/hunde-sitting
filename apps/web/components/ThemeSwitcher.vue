@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue';
 
-const colorMode = useColorMode();
+const colorMode = useColorMode({ persist: true });
 const buttonVariant = computed(() => colorMode.value === 'dark' ? 'outline-light' : 'outline-dark');
 </script>
 
@@ -17,7 +17,7 @@ const buttonVariant = computed(() => colorMode.value === 'dark' ? 'outline-light
     </div>
 </template>
 
-<style lang="scss">
+<style scoped>
 .moon,
 .sun {
     width: 1.2rem;
