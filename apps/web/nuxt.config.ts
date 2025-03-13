@@ -27,7 +27,7 @@ export default defineNuxtConfig({
         },
     },
 
-    modules: ['@bootstrap-vue-next/nuxt'],
+    modules: ['@bootstrap-vue-next/nuxt', '@vueuse/nuxt'],
 
     bootstrapVueNext: {
         css: false,
