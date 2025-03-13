@@ -2,27 +2,52 @@
 import { Icon } from '@iconify/vue';
 
 const colorMode = useColorMode();
+const buttonVariant = computed(() => colorMode.value === 'dark' ? 'outline-light' : 'outline-dark');
 </script>
 
 <template>
-    <DropdownMenu>
-        <DropdownMenuTrigger as-child>
-            <Button variant="outline">
-                <Icon icon="radix-icons:moon" class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Icon icon="radix-icons:sun" class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                <span class="sr-only">Toggle theme</span>
-            </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-            <DropdownMenuItem @click="colorMode.preference = 'light'">
-                Light
-            </DropdownMenuItem>
-            <DropdownMenuItem @click="colorMode.preference = 'dark'">
-                Dark
-            </DropdownMenuItem>
-            <DropdownMenuItem @click="colorMode.preference = 'system'">
-                System
-            </DropdownMenuItem>
-        </DropdownMenuContent>
-    </DropdownMenu>
+    <div class="position-absolute bottom-0 end-0 p-2">
+        <BButton :variant="buttonVariant" @click="colorMode = colorMode === 'dark' ? 'light' : 'dark'">
+            <div class="p-3">
+                <Icon class="moon position-absolute translate-middle" icon="radix-icons:moon" />
+                <Icon class="sun position-absolute translate-middle" icon="radix-icons:sun" />
+            </div>
+            <span class="visually-hidden">Toggle Color Scheme</span>
+        </BButton>
+    </div>
 </template>
+
+<style lang="scss">
+.moon,
+.sun {
+    width: 1.2rem;
+    height: 1.2rem;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+}
+
+body[data-bs-theme='dark'] {
+    .moon {
+        transform: rotate(-90deg);
+        scale: 0%;
+    }
+
+    .sun {
+        transform: rotate(0deg);
+        scale: 100%;
+    }
+}
+
+body[data-bs-theme='light'] {
+    .moon {
+        transform: rotate(0deg);
+        scale: 100%;
+    }
+
+    .sun {
+        transform: rotate(90deg);
+        scale: 0%;
+    }
+}
+</style>
