@@ -1,11 +1,10 @@
-import type { IDatabaseProvider } from './db/databaseprovider.js';
+import type { IDatabaseProvider } from '#db/databaseprovider.js';
 import type { IDashboardRepository } from '#repositories/dashboardrepository.js';
 
 import { Container } from 'inversify';
 
+import DatabaseProvider, { DatabaseProviderSymbol } from '#db/databaseprovider.js';
 import { DashboardRepository, DashboardRepositorySymbol } from '#repositories/dashboardrepository.js';
-
-import DatabaseProvider, { DatabaseProviderSymbol } from './db/databaseprovider.js';
 
 const container = new Container();
 container.bind<IDatabaseProvider>(DatabaseProviderSymbol).to(DatabaseProvider).inSingletonScope();
