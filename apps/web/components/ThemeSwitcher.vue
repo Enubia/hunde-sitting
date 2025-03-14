@@ -5,8 +5,9 @@ const props = defineProps({
     size: { type: String, default: '24' },
 });
 
-const colorMode = useColorMode({ persist: true });
-const buttonVariant = computed(() => colorMode.value === 'dark' ? 'link-light' : 'link-dark');
+const colorMode = useColorMode({ persist: true, initialValue: 'light' });
+const buttonVariant = computed(() => colorMode.value === 'light' ? 'link-dark' : 'link-light');
+const icon = computed(() => colorMode.value === 'light' ? 'radix-icons:moon' : 'radix-icons:sun');
 
 function setMode() {
     colorMode.value = colorMode.value === 'dark' ? 'light' : 'dark';
@@ -14,13 +15,14 @@ function setMode() {
 </script>
 
 <template>
-    <BButton :variant="buttonVariant" class="border-0" @click="setMode">
-        <Icon
-            :height="props.size"
-            :width="props.size"
-            class="moon position-absolute translate-middle"
-            :icon="colorMode === 'light' ? 'radix-icons:moon' : 'radix-icons:sun'"
-        />
-        <span class="visually-hidden">Toggle Color Scheme</span>
-    </BButton>
+    <ClientOnly>
+        <BButton :variant="buttonVariant" class="border-0" @click="setMode">
+            <Icon
+                :height="props.size"
+                :width="props.size"
+                :icon="icon"
+            />
+            <span class="visually-hidden">Toggle Color Scheme</span>
+        </BButton>
+    </ClientOnly>
 </template>
