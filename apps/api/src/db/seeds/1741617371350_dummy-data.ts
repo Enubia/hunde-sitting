@@ -12,13 +12,11 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
         // Temporarily disable triggers during bulk insert
         await db.executeQuery(sql`SET session_replication_role = 'replica'`.compile(db));
 
-        // Track created IDs for relationships
         const userIds: number[] = [];
         const sitterIds: number[] = [];
         const dogBreedIds: number[] = [];
         const dogIds: number[] = [];
 
-        // Add default dog breeds
         console.log('Creating default dog breeds...');
 
         const breeds: Insertable<DogBreeds>[] = [
@@ -65,7 +63,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
             dogBreedIds.push(...existingBreeds.map(breed => breed.id));
         }
 
-        // Create admin user (if not exists)
         console.log('Creating admin user...');
 
         const existingAdmin = await db.selectFrom('users')
@@ -104,14 +101,12 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
 
         userIds.push(adminUserId);
 
-        // Get admin group ID
         const adminGroup = await db.selectFrom('user_groups')
             .where('name', '=', 'administrator')
             .select('id')
             .executeTakeFirst();
 
         if (adminGroup) {
-            // Check if admin user is already in admin group
             const existingMembership = await db.selectFrom('user_group_memberships')
                 .where('user_id', '=', adminUserId)
                 .where('group_id', '=', adminGroup.id)
@@ -119,7 +114,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
                 .executeTakeFirst();
 
             if (!existingMembership) {
-                // Add admin user to admin group
                 await db.insertInto('user_group_memberships')
                     .values({
                         user_id: adminUserId,
@@ -129,7 +123,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
             }
         }
 
-        // Create moderator user (if not exists)
         console.log('Creating moderator user...');
 
         const existingMod = await db.selectFrom('users')
@@ -168,14 +161,12 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
 
         userIds.push(modUserId);
 
-        // Get moderator group ID
         const modGroup = await db.selectFrom('user_groups')
             .where('name', '=', 'moderator')
             .select('id')
             .executeTakeFirst();
 
         if (modGroup) {
-            // Check if moderator user is already in moderator group
             const existingMembership = await db.selectFrom('user_group_memberships')
                 .where('user_id', '=', modUserId)
                 .where('group_id', '=', modGroup.id)
@@ -183,7 +174,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
                 .executeTakeFirst();
 
             if (!existingMembership) {
-                // Add moderator user to moderator group
                 await db.insertInto('user_group_memberships')
                     .values({
                         user_id: modUserId,
@@ -193,7 +183,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
             }
         }
 
-        // Create regular users
         console.log('Creating regular users...');
 
         for (let i = 0; i < 20; i++) {
@@ -245,7 +234,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
 
                 sitterIds.push(sitter.id);
 
-                // Create sitter services (2-5 per sitter)
                 const serviceTypes = ['dog_walking', 'overnight_stay', 'daycare', 'boarding', 'training', 'grooming', 'vet_visits', 'pet_taxi'];
                 const numServices = Math.floor(Math.random() * 4) + 2;
                 const shuffledServices = [...serviceTypes].sort(() => 0.5 - Math.random());
@@ -263,7 +251,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
                         .execute();
                 }
 
-                // Create certificates (0-2 per sitter)
                 const numCertificates = Math.floor(Math.random() * 3);
                 for (let j = 0; j < numCertificates; j++) {
                     await db
@@ -279,13 +266,12 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
                         .execute();
                 }
 
-                // Create availability (3-7 days per sitter)
                 const daysOfWeek = [0, 1, 2, 3, 4, 5, 6];
                 const availableDays = [...daysOfWeek].sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 5) + 3);
 
                 for (const day of availableDays) {
-                    const startHour = Math.floor(Math.random() * 12) + 7; // 7 AM to 7 PM
-                    const endHour = startHour + Math.floor(Math.random() * (24 - startHour - 1)) + 1; // At least 1 hour later
+                    const startHour = Math.floor(Math.random() * 12) + 7;
+                    const endHour = startHour + Math.floor(Math.random() * (24 - startHour - 1)) + 1;
 
                     await db
                         .insertInto('availability')
@@ -298,7 +284,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
                         .execute();
                 }
 
-                // Create breed specialties (1-3 per sitter)
                 const numSpecialties = Math.floor(Math.random() * 3) + 1;
                 const shuffledBreeds = [...dogBreedIds].sort(() => 0.5 - Math.random());
 
@@ -314,12 +299,11 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
                         .execute();
                 }
 
-                // Create unavailable dates (0-3 per sitter)
                 const numUnavailablePeriods = Math.floor(Math.random() * 4);
                 for (let j = 0; j < numUnavailablePeriods; j++) {
                     const startDate = faker.date.future();
                     const endDate = new Date(startDate);
-                    endDate.setDate(endDate.getDate() + Math.floor(Math.random() * 14) + 1); // 1-14 days
+                    endDate.setDate(endDate.getDate() + Math.floor(Math.random() * 14) + 1);
 
                     await db
                         .insertInto('unavailable_dates')
@@ -334,7 +318,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
             }
         }
 
-        // Create dogs (1-3 per user)
         console.log('Creating dogs...');
 
         for (const userId of userIds) {
@@ -369,12 +352,10 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
             }
         }
 
-        // Create bookings between sitters and dog owners
         console.log('Creating bookings...');
 
         const locationTypes = ['sitter_home', 'client_home', 'park', 'other'];
 
-        // Create 40 random bookings
         for (let i = 0; i < 40; i++) {
             if (sitterIds.length === 0 || dogIds.length === 0) {
                 continue;
@@ -382,7 +363,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
 
             const sitterId = sitterIds[Math.floor(Math.random() * sitterIds.length)];
 
-            // Get sitter's user_id
             const [sitterRecord] = await db
                 .selectFrom('sitters')
                 .select('user_id')
@@ -415,7 +395,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
                 continue;
             }
 
-            // Get a random service
             const [service] = await db
                 .selectFrom('sitter_services')
                 .select('id')
@@ -426,7 +405,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
                 continue;
             }
 
-            // Determine booking dates
             const now = new Date();
             const timeDistribution = Math.random();
             let startDate: Date, endDate: Date, status: string;
@@ -459,7 +437,6 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
                 }
             }
 
-            // Calculate a realistic price
             const days = Math.ceil((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000));
             const price = Number.parseFloat((Math.random() * 50 * days + 20).toFixed(2));
 
@@ -481,60 +458,40 @@ export async function seed(db: Kysely<Schema>): Promise<void> {
                 .returning('id')
                 .execute();
 
-            // Add reviews for completed bookings
             if (status === 'completed' && Math.random() > 0.3) {
-                // Review by client
+                // Reviews by client
                 await db
                     .insertInto('reviews')
                     .values({
                         booking_id: booking.id,
                         reviewer_id: clientId,
                         reviewee_id: sitterRecord.user_id,
-                        rating: Math.floor(Math.random() * 5) + 1, // 1-5 stars
+                        rating: Math.floor(Math.random() * 5) + 1,
                         comment: Math.random() > 0.2 ? faker.lorem.paragraph() : null,
-                        created_at: new Date(endDate.getTime() + (24 * 60 * 60 * 1000)).toISOString(), // 1 day after booking end
+                        created_at: new Date(endDate.getTime() + (24 * 60 * 60 * 1000)).toISOString(),
                     })
                     .execute();
-
-                // Sometimes review by sitter too
-                if (Math.random() > 0.6) {
-                    await db
-                        .insertInto('reviews')
-                        .values({
-                            booking_id: booking.id,
-                            reviewer_id: sitterRecord.user_id,
-                            reviewee_id: clientId,
-                            rating: Math.floor(Math.random() * 3) + 3, // 3-5 stars (sitters tend to be nice)
-                            comment: Math.random() > 0.3 ? faker.lorem.paragraph() : null,
-                            created_at: new Date(endDate.getTime() + (2 * 24 * 60 * 60 * 1000)).toISOString(), // 2 days after booking end
-                        })
-                        .execute();
-                }
             }
         }
 
-        // Create OAuth accounts for some users
         console.log('Creating OAuth accounts...');
 
         const oauthProviders = ['google', 'facebook', 'apple', 'github'];
 
         for (const userId of userIds) {
-            // 30% chance to have an OAuth account
-            if (Math.random() > 0.7) {
-                const provider = oauthProviders[Math.floor(Math.random() * oauthProviders.length)];
+            const provider = oauthProviders[Math.floor(Math.random() * oauthProviders.length)];
 
-                await db
-                    .insertInto('oauth_accounts')
-                    .values({
-                        user_id: userId,
-                        provider: provider as any,
-                        provider_user_id: faker.string.uuid(),
-                        access_token: faker.string.alphanumeric(64),
-                        refresh_token: faker.string.alphanumeric(64),
-                        expires_at: faker.date.future(),
-                    })
-                    .execute();
-            }
+            await db
+                .insertInto('oauth_accounts')
+                .values({
+                    user_id: userId,
+                    provider: provider as any,
+                    provider_user_id: faker.string.uuid(),
+                    access_token: faker.string.alphanumeric(64),
+                    refresh_token: faker.string.alphanumeric(64),
+                    expires_at: faker.date.future(),
+                })
+                .execute();
         }
 
         console.log('Seed data creation complete!');

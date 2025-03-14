@@ -1,28 +1,24 @@
-import type { IDatabaseProvider } from '#db/databaseprovider.js';
+import type { DatabaseProvider } from '#db/databaseprovider.js';
 
 import { inject, injectable } from 'inversify';
 
 import { DatabaseProviderSymbol } from '#db/databaseprovider.js';
 
-export const DashboardRepositorySymbol = Symbol('DashboardRepository');
-
-export interface IDashboardRepository {
-    getStats: () => Promise<Record<string, unknown>[]>;
-}
+export const DashboardRepositorySymbol = Symbol.for('DashboardRepository');
 
 @injectable()
-export class DashboardRepository implements IDashboardRepository {
+export class DashboardRepository {
     constructor(
         @inject(DatabaseProviderSymbol)
-        private readonly provider: IDatabaseProvider,
-    ) {
-    }
+        private readonly provider: DatabaseProvider,
+    ) {}
 
-    async getStats() {
+    async getStats(limit?: string) {
         return await this.provider.db
             .selectFrom('users')
             .innerJoin('sitters', 'users.id', 'sitters.user_id')
             .selectAll()
+            .$if(!!limit, q => q.limit(Number.parseInt(limit!)))
             .execute();
     }
 }

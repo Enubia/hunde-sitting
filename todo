@@ -1,0 +1,12 @@
+Api:
+    Database:
+        Revisit db tables:
+            ☐ check core tables for missing/unnecessary columns
+            ☐ add indexes on foreign keys
+            ☐ rethink user roles, do we need them? (probably not in the beginning)
+
+        ☐ check postgres connection pool size (see if we can increase it to 10, depending on server cpu and memory)
+    
+    Caching:
+        ☐ redis? (probably not for the beginning since server resources are limited)
+        ☐ in-memory storage?

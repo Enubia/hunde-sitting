@@ -5,10 +5,6 @@ import { indexQueryValidator } from '#lib/validators/index.js';
 
 const router = createRouter()
     .get('/', indexQueryValidator, (c) => {
-        const query = c.req.valid('query');
-
-        c.get('log').info('Query:', query);
-
         return c.json({
             message: 'Hunde-Sitting API',
         }, HttpStatusCodes.OK);

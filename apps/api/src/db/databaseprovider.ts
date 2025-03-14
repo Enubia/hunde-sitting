@@ -6,16 +6,10 @@ import pg from 'pg';
 
 import { config } from '#lib/config.js';
 
-export const DatabaseProviderSymbol = Symbol('DatabaseProvider');
-
-export interface IDatabaseProvider {
-    connect: () => Promise<void>;
-    close: () => Promise<void>;
-    db: Kysely<Schema>;
-}
+export const DatabaseProviderSymbol = Symbol.for('DatabaseProvider');
 
 @injectable()
-export default class DatabaseProvider implements IDatabaseProvider {
+export class DatabaseProvider {
     readonly db: Kysely<Schema>;
     constructor() {
         this.db = new Kysely<Schema>({
@@ -28,9 +22,6 @@ export default class DatabaseProvider implements IDatabaseProvider {
                     port: config.POSTGRES_PORT,
                     idleTimeoutMillis: 10000,
                     connectionTimeoutMillis: 30000,
-                    // TODO: check hetzner server later on
-                    // and see if we can increase this value
-                    // num_cpus * 2 + 1
                     max: 5,
                 }),
             }),

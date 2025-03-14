@@ -15,7 +15,6 @@
 
         "paths": {
             "#db/*": ["./src/db/*"],
-            "#controllers/*": ["./src/controllers/*"],
             "#lib/*": ["./src/lib/*"],
             "#repositories/*": ["./src/repositories/*"],
             "#services/*": ["./src/services/*"],
