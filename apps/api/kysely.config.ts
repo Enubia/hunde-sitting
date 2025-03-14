@@ -1,16 +1,18 @@
+import type { IDatabaseProvider } from './src/db/databaseprovider';
+
 import { defineConfig, getKnexTimestampPrefix } from 'kysely-ctl';
 
-import { db } from './src/lib/db/database';
+import { DatabaseProviderSymbol } from './src/db/databaseprovider';
+import container from './src/ioc';
 
 export default defineConfig({
-    // replace me with a real dialect instance OR a dialect name + `dialectConfig` prop.
-    kysely: db,
+    kysely: container.get<IDatabaseProvider>(DatabaseProviderSymbol).db,
     migrations: {
-        migrationFolder: 'src/lib/db/migrations',
+        migrationFolder: 'src/db/migrations',
         getMigrationPrefix: getKnexTimestampPrefix,
     },
     //   plugins: [],
     seeds: {
-        seedFolder: 'src/lib/db/seeds',
+        seedFolder: 'src/db/seeds',
     },
 });

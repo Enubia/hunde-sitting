@@ -1,12 +1,11 @@
+import type { Schema } from '../schema';
+import type { DogBreeds } from '../schema/db';
 import type { Insertable, Kysely } from 'kysely';
 
 import { faker } from '@faker-js/faker';
 import { sql } from 'kysely';
 
-import type { DogBreeds } from '../schema/db';
-import type { DB } from '../schema/schema';
-
-export async function seed(db: Kysely<DB>): Promise<void> {
+export async function seed(db: Kysely<Schema>): Promise<void> {
     try {
         console.log('Starting to seed default and dummy data...');
 
