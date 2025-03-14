@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import type { IDatabaseProvider } from './db/databaseprovider.js';
+import type { DatabaseProvider } from './db/databaseprovider.js';
 
 import { serve } from '@hono/node-server';
 
@@ -10,7 +10,7 @@ import createApp from './lib/create-app.js';
 import container from './lib/ioc.js';
 import { registerRoutes } from './routes/index.js';
 
-await container.get<IDatabaseProvider>(DatabaseProviderSymbol).connect();
+await container.get<DatabaseProvider>(DatabaseProviderSymbol).connect();
 
 const app = registerRoutes(createApp());
 
