@@ -20,6 +20,11 @@
                 "^clean"
             ]
         },
+        "debug": {
+            "dependsOn": [
+                "^debug"
+            ]
+        },
         "dev": {
             "persistent": true,
             "cache": false
