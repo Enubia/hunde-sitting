@@ -285,42 +285,42 @@ export async function up(db: Kysely<any>): Promise<void> {
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
-    await db.schema.dropIndex('idx_unavailable_dates_sitter_id').on('unavailable_dates').execute();
+    await db.schema.dropIndex('idx_unavailable_dates_sitter_id').ifExists().execute();
 
-    await db.schema.dropIndex('idx_availability_sitter_id').on('availability').execute();
+    await db.schema.dropIndex('idx_availability_sitter_id').ifExists().execute();
 
-    await db.schema.dropIndex('idx_reviews_sitter_id').on('reviews').execute();
-    await db.schema.dropIndex('idx_reviews_reviewer_id').on('reviews').execute();
+    await db.schema.dropIndex('idx_reviews_sitter_id').ifExists().execute();
+    await db.schema.dropIndex('idx_reviews_reviewer_id').ifExists().execute();
 
-    await db.schema.dropIndex('idx_bookings_sitter_dates').on('bookings').execute();
-    await db.schema.dropIndex('idx_bookings_status').on('bookings').execute();
-    await db.schema.dropIndex('idx_bookings_canceled_by').on('bookings').execute();
-    await db.schema.dropIndex('idx_bookings_service_id').on('bookings').execute();
-    await db.schema.dropIndex('idx_bookings_sitter_id').on('bookings').execute();
-    await db.schema.dropIndex('idx_bookings_client_id').on('bookings').execute();
+    await db.schema.dropIndex('idx_bookings_sitter_dates').ifExists().execute();
+    await db.schema.dropIndex('idx_bookings_status').ifExists().execute();
+    await db.schema.dropIndex('idx_bookings_canceled_by').ifExists().execute();
+    await db.schema.dropIndex('idx_bookings_service_id').ifExists().execute();
+    await db.schema.dropIndex('idx_bookings_sitter_id').ifExists().execute();
+    await db.schema.dropIndex('idx_bookings_client_id').ifExists().execute();
 
-    await db.schema.dropIndex('idx_dogs_owner_id').on('dogs').execute();
+    await db.schema.dropIndex('idx_dogs_owner_id').ifExists().execute();
 
-    await db.schema.dropIndex('idx_sitter_breed_specialties_breed_id').on('sitter_breed_specialties').execute();
-    await db.schema.dropIndex('idx_sitter_breed_specialties_sitter_id').on('sitter_breed_specialties').execute();
+    await db.schema.dropIndex('idx_sitter_breed_specialties_breed_id').ifExists().execute();
+    await db.schema.dropIndex('idx_sitter_breed_specialties_sitter_id').ifExists().execute();
 
-    await db.schema.dropIndex('idx_sitter_services_service_name').on('sitter_services').execute();
-    await db.schema.dropIndex('idx_sitter_services_sitter_id').on('sitter_services').execute();
+    await db.schema.dropIndex('idx_sitter_services_service_name').ifExists().execute();
+    await db.schema.dropIndex('idx_sitter_services_sitter_id').ifExists().execute();
 
-    await db.schema.dropIndex('idx_sitters_user_id').on('sitters').execute();
+    await db.schema.dropIndex('idx_sitters_user_id').ifExists().execute();
 
-    await db.schema.dropIndex('idx_user_groups_type').on('user_groups').execute();
+    await db.schema.dropIndex('idx_user_groups_type').ifExists().execute();
 
-    await db.schema.dropIndex('idx_oauth_provider').on('oauth_accounts').execute();
-    await db.schema.dropIndex('idx_oauth_user_id').on('oauth_accounts').execute();
+    await db.schema.dropIndex('idx_oauth_provider').ifExists().execute();
+    await db.schema.dropIndex('idx_oauth_user_id').ifExists().execute();
 
-    await db.schema.dropIndex('idx_email_verification_tokens_user_id').on('email_verification_tokens').execute();
-    await db.schema.dropIndex('idx_email_verification_tokens_token').on('email_verification_tokens').execute();
+    await db.schema.dropIndex('idx_email_verification_tokens_user_id').ifExists().execute();
+    await db.schema.dropIndex('idx_email_verification_tokens_token').ifExists().execute();
 
-    await db.schema.dropIndex('idx_registration_data_location').on('registration_data').execute();
-    await db.schema.dropIndex('idx_registration_data_user_id').on('registration_data').execute();
+    await db.schema.dropIndex('idx_registration_data_location').ifExists().execute();
+    await db.schema.dropIndex('idx_registration_data_user_id').ifExists().execute();
 
-    await db.schema.dropIndex('idx_users_email').on('users').execute();
+    await db.schema.dropIndex('idx_users_email').ifExists().execute();
 
     await db.schema.dropTable('unavailable_dates').ifExists().execute();
     await db.schema.dropTable('availability').ifExists().execute();
@@ -331,6 +331,7 @@ export async function down(db: Kysely<any>): Promise<void> {
     await db.schema.dropTable('sitter_breed_specialties').ifExists().execute();
     await db.schema.dropTable('dog_breeds').ifExists().execute();
     await db.schema.dropTable('sitter_certificates').ifExists().execute();
+    await db.schema.dropTable('sitter_service_names').ifExists().execute();
     await db.schema.dropTable('sitter_services').ifExists().execute();
     await db.schema.dropTable('sitters').ifExists().execute();
     await db.schema.dropTable('user_groups').ifExists().execute();
