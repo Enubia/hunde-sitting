@@ -243,6 +243,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     await db.schema.createIndex('idx_users_email').on('users').column('email').execute();
 
     await db.schema.createIndex('idx_registration_data_user_id').on('registration_data').column('user_id').execute();
+    await db.schema.createIndex('idx_registration_data_location').on('registration_data').columns(['city', 'state', 'postal_code']).execute();
 
     await db.schema.createIndex('idx_email_verification_tokens_token').on('email_verification_tokens').columns(['token']).execute();
     await db.schema.createIndex('idx_email_verification_tokens_user_id').on('email_verification_tokens').column('user_id').execute();
@@ -265,6 +266,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     await db.schema.createIndex('idx_bookings_service_id').on('bookings').column('service_id').execute();
     await db.schema.createIndex('idx_bookings_canceled_by').on('bookings').column('canceled_by').execute();
     await db.schema.createIndex('idx_bookings_status').on('bookings').column('status').execute();
+    await db.schema.createIndex('idx_bookings_sitter_dates').on('bookings').columns(['sitter_id', 'start_date', 'end_date']).execute();
 
     await db.schema.createIndex('idx_reviews_reviewer_id').on('reviews').column('reviewer_id').execute();
     await db.schema.createIndex('idx_reviews_sitter_id').on('reviews').column('sitter_id').execute();
@@ -284,6 +286,7 @@ export async function down(db: Kysely<any>): Promise<void> {
     await db.schema.dropIndex('idx_reviews_sitter_id').on('reviews').execute();
     await db.schema.dropIndex('idx_reviews_reviewer_id').on('reviews').execute();
 
+    await db.schema.dropIndex('idx_bookings_sitter_dates').on('bookings').execute();
     await db.schema.dropIndex('idx_bookings_status').on('bookings').execute();
     await db.schema.dropIndex('idx_bookings_canceled_by').on('bookings').execute();
     await db.schema.dropIndex('idx_bookings_service_id').on('bookings').execute();
@@ -308,6 +311,7 @@ export async function down(db: Kysely<any>): Promise<void> {
     await db.schema.dropIndex('idx_email_verification_tokens_user_id').on('email_verification_tokens').execute();
     await db.schema.dropIndex('idx_email_verification_tokens_token').on('email_verification_tokens').execute();
 
+    await db.schema.dropIndex('idx_registration_data_location').on('registration_data').execute();
     await db.schema.dropIndex('idx_registration_data_user_id').on('registration_data').execute();
 
     await db.schema.dropIndex('idx_users_email').on('users').execute();

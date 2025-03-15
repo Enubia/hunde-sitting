@@ -4,7 +4,8 @@ Api:
             ✔ check core tables for missing/unnecessary columns @done(25-03-15 11:34)
             ✔ add indexes on foreign keys @done(25-03-15 11:34)
             ✔ rethink user roles, do we need them? (probably not in the beginning) @done(25-03-15 10:46)
-            ☐ check indexes (single, composite)
+            ✔ check indexes (single, composite) @done(25-03-15 11:51)
+            ☐ create additional indexes if needed (will probably see what else we need once we start implementing the api and frontend)
 
         ☐ check postgres connection pool size (see if we can increase it to 10, depending on server cpu and memory)
     
