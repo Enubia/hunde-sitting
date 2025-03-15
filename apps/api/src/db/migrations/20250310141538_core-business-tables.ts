@@ -240,163 +240,76 @@ export async function up(db: Kysely<any>): Promise<void> {
 
     // #region indexes
 
-    await db.schema
-        .createIndex('idx_users_email')
-        .on('users')
-        .column('email')
-        .execute();
+    await db.schema.createIndex('idx_users_email').on('users').column('email').execute();
 
-    await db.schema
-        .createIndex('idx_registration_data_user_id')
-        .on('registration_data')
-        .column('user_id')
-        .execute();
+    await db.schema.createIndex('idx_registration_data_user_id').on('registration_data').column('user_id').execute();
 
-    await db.schema
-        .createIndex('idx_email_verification_tokens_token')
-        .on('email_verification_tokens')
-        .columns(['token'])
-        .execute();
+    await db.schema.createIndex('idx_email_verification_tokens_token').on('email_verification_tokens').columns(['token']).execute();
+    await db.schema.createIndex('idx_email_verification_tokens_user_id').on('email_verification_tokens').column('user_id').execute();
+    await db.schema.createIndex('idx_oauth_user_id').on('oauth_accounts').columns(['user_id']).execute();
+    await db.schema.createIndex('idx_oauth_provider').on('oauth_accounts').column('provider').execute();
 
-    await db.schema
-        .createIndex('idx_email_verification_tokens_user_id')
-        .on('email_verification_tokens')
-        .column('user_id')
-        .execute();
+    await db.schema.createIndex('idx_user_groups_user_id').on('user_groups').column('user_id').execute();
+    await db.schema.createIndex('idx_user_groups_type').on('user_groups').column('type').execute();
 
-    await db.schema
-        .createIndex('idx_oauth_user_id')
-        .on('oauth_accounts')
-        .columns(['user_id'])
-        .execute();
+    await db.schema.createIndex('idx_sitters_user_id').on('sitters').column('user_id').execute();
 
-    await db.schema
-        .createIndex('idx_oauth_provider')
-        .on('oauth_accounts')
-        .column('provider')
-        .execute();
+    await db.schema.createIndex('idx_sitter_services_sitter_id').on('sitter_services').column('sitter_id').execute();
 
-    await db.schema
-        .createIndex('idx_user_groups_user_id')
-        .on('user_groups')
-        .column('user_id')
-        .execute();
+    await db.schema.createIndex('idx_sitter_breed_specialties_sitter_id').on('sitter_breed_specialties').column('sitter_id').execute();
+    await db.schema.createIndex('idx_sitter_breed_specialties_breed_id').on('sitter_breed_specialties').column('breed_id').execute();
+    await db.schema.createIndex('idx_dogs_owner_id').on('dogs').column('owner_id').execute();
 
-    await db.schema
-        .createIndex('idx_user_groups_type')
-        .on('user_groups')
-        .column('type')
-        .execute();
+    await db.schema.createIndex('idx_bookings_client_id').on('bookings').column('client_id').execute();
+    await db.schema.createIndex('idx_bookings_sitter_id').on('bookings').column('sitter_id').execute();
+    await db.schema.createIndex('idx_bookings_service_id').on('bookings').column('service_id').execute();
+    await db.schema.createIndex('idx_bookings_canceled_by').on('bookings').column('canceled_by').execute();
+    await db.schema.createIndex('idx_bookings_status').on('bookings').column('status').execute();
 
-    await db.schema
-        .createIndex('idx_sitters_user_id')
-        .on('sitters')
-        .column('user_id')
-        .execute();
+    await db.schema.createIndex('idx_reviews_reviewer_id').on('reviews').column('reviewer_id').execute();
+    await db.schema.createIndex('idx_reviews_sitter_id').on('reviews').column('sitter_id').execute();
 
-    await db.schema
-        .createIndex('idx_sitter_services_sitter_id')
-        .on('sitter_services')
-        .column('sitter_id')
-        .execute();
+    await db.schema.createIndex('idx_availability_sitter_id').on('availability').column('sitter_id').execute();
 
-    await db.schema
-        .createIndex('idx_sitter_breed_specialties_sitter_id')
-        .on('sitter_breed_specialties')
-        .column('sitter_id')
-        .execute();
-
-    await db.schema
-        .createIndex('idx_sitter_breed_specialties_breed_id')
-        .on('sitter_breed_specialties')
-        .column('breed_id')
-        .execute();
-
-    await db.schema
-        .createIndex('idx_dogs_owner_id')
-        .on('dogs')
-        .column('owner_id')
-        .execute();
-
-    await db.schema
-        .createIndex('idx_bookings_client_id')
-        .on('bookings')
-        .column('client_id')
-        .execute();
-
-    await db.schema
-        .createIndex('idx_bookings_sitter_id')
-        .on('bookings')
-        .column('sitter_id')
-        .execute();
-
-    await db.schema
-        .createIndex('idx_bookings_service_id')
-        .on('bookings')
-        .column('service_id')
-        .execute();
-
-    await db.schema
-        .createIndex('idx_bookings_canceled_by')
-        .on('bookings')
-        .column('canceled_by')
-        .execute();
-
-    await db.schema
-        .createIndex('idx_bookings_status')
-        .on('bookings')
-        .column('status')
-        .execute();
-
-    await db.schema
-        .createIndex('idx_reviews_reviewer_id')
-        .on('reviews')
-        .column('reviewer_id')
-        .execute();
-
-    await db.schema
-        .createIndex('idx_reviews_sitter_id')
-        .on('reviews')
-        .column('sitter_id')
-        .execute();
-
-    await db.schema
-        .createIndex('idx_availability_sitter_id')
-        .on('availability')
-        .column('sitter_id')
-        .execute();
-
-    await db.schema
-        .createIndex('idx_unavailable_dates_sitter_id')
-        .on('unavailable_dates')
-        .column('sitter_id')
-        .execute();
+    await db.schema.createIndex('idx_unavailable_dates_sitter_id').on('unavailable_dates').column('sitter_id').execute();
 
     // #endregion indexes
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
     await db.schema.dropIndex('idx_unavailable_dates_sitter_id').on('unavailable_dates').execute();
+
     await db.schema.dropIndex('idx_availability_sitter_id').on('availability').execute();
+
     await db.schema.dropIndex('idx_reviews_sitter_id').on('reviews').execute();
     await db.schema.dropIndex('idx_reviews_reviewer_id').on('reviews').execute();
+
     await db.schema.dropIndex('idx_bookings_status').on('bookings').execute();
     await db.schema.dropIndex('idx_bookings_canceled_by').on('bookings').execute();
     await db.schema.dropIndex('idx_bookings_service_id').on('bookings').execute();
     await db.schema.dropIndex('idx_bookings_sitter_id').on('bookings').execute();
     await db.schema.dropIndex('idx_bookings_client_id').on('bookings').execute();
+
     await db.schema.dropIndex('idx_dogs_owner_id').on('dogs').execute();
+
     await db.schema.dropIndex('idx_sitter_breed_specialties_breed_id').on('sitter_breed_specialties').execute();
     await db.schema.dropIndex('idx_sitter_breed_specialties_sitter_id').on('sitter_breed_specialties').execute();
+
     await db.schema.dropIndex('idx_sitter_services_service_name').on('sitter_services').execute();
     await db.schema.dropIndex('idx_sitter_services_sitter_id').on('sitter_services').execute();
+
     await db.schema.dropIndex('idx_sitters_user_id').on('sitters').execute();
+
     await db.schema.dropIndex('idx_user_groups_type').on('user_groups').execute();
+
     await db.schema.dropIndex('idx_oauth_provider').on('oauth_accounts').execute();
     await db.schema.dropIndex('idx_oauth_user_id').on('oauth_accounts').execute();
+
     await db.schema.dropIndex('idx_email_verification_tokens_user_id').on('email_verification_tokens').execute();
     await db.schema.dropIndex('idx_email_verification_tokens_token').on('email_verification_tokens').execute();
+
     await db.schema.dropIndex('idx_registration_data_user_id').on('registration_data').execute();
+
     await db.schema.dropIndex('idx_users_email').on('users').execute();
 
     await db.schema.dropTable('unavailable_dates').ifExists().execute();
