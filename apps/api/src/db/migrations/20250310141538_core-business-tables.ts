@@ -43,6 +43,12 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('city', 'varchar(100)', col => col.notNull())
         .addColumn('state', 'varchar(100)', col => col.notNull())
         .addColumn('postal_code', 'varchar(20)', col => col.notNull())
+        // will be available only if user grants location access
+        // store as float for now, can be converted to geography later
+        // we'll see if an algorithm can be used to determine available sitters
+        // or if we needs PostGIS
+        .addColumn('longitude', 'float8')
+        .addColumn('latitude', 'float8')
         .addColumn('country', 'varchar(100)', col => col.notNull())
         .addUniqueConstraint('registration_data_user_id_unique', ['user_id'])
         .execute();
@@ -243,7 +249,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     await db.schema.createIndex('idx_users_email').on('users').column('email').execute();
 
     await db.schema.createIndex('idx_registration_data_user_id').on('registration_data').column('user_id').execute();
-    await db.schema.createIndex('idx_registration_data_location').on('registration_data').columns(['city', 'state', 'postal_code']).execute();
+    await db.schema.createIndex('idx_registration_data_location').on('registration_data').columns(['city', 'state', 'postal_code', 'longitude', 'latitude']).execute();
 
     await db.schema.createIndex('idx_email_verification_tokens_token').on('email_verification_tokens').columns(['token']).execute();
     await db.schema.createIndex('idx_email_verification_tokens_user_id').on('email_verification_tokens').column('user_id').execute();

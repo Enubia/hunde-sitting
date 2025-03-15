@@ -7,8 +7,13 @@ Api:
             ✔ check indexes (single, composite) @done(25-03-15 11:51)
             ☐ create additional indexes if needed (will probably see what else we need once we start implementing the api and frontend)
 
+        ☐ check if postgis is needed or we can create a simple algorithm to determine a list of closest sitters
+
         ☐ check postgres connection pool size (see if we can increase it to 10, depending on server cpu and memory)
     
     Caching:
         ☐ redis? (probably not for the beginning since server resources are limited)
         ☐ in-memory storage?
+
+Web:
+    ☐ maybe look into leaflet.js for map rendering
