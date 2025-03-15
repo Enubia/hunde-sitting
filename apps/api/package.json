@@ -14,6 +14,7 @@
         "migrate:list": "pnpm exec kysely migrate:list",
         "migrate:make": "pnpm exec kysely migrate:make",
         "migrate:rollback": "pnpm exec kysely migrate:rollback",
+        "recreate-db": "pnpm migrate:down && pnpm migrate:up && pnpm generate-schema",
         "seed:run": "pnpm exec kysely seed:run",
         "seed:make": "pnpm exec kysely seed:make",
         "migrate:up": "pnpm exec kysely migrate:up",

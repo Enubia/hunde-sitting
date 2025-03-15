@@ -3,6 +3,8 @@
     "prettier.enable": false,
     "editor.formatOnSave": false,
 
+    "terminal.integrated.cwd": "${workspaceFolder}/apps/api",
+
     // Auto fix
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": "explicit",
