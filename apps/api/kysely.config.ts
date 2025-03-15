@@ -1,12 +1,9 @@
-import type { DatabaseProvider } from './src/db/databaseprovider';
-
 import { defineConfig, getKnexTimestampPrefix } from 'kysely-ctl';
 
-import { DatabaseProviderSymbol } from './src/db/databaseprovider';
-import container from './src/lib/ioc';
+import { db } from './src/db/migratorconnection.js';
 
 export default defineConfig({
-    kysely: container.get<DatabaseProvider>(DatabaseProviderSymbol).db,
+    kysely: db,
     migrations: {
         migrationFolder: 'src/db/migrations',
         getMigrationPrefix: getKnexTimestampPrefix,

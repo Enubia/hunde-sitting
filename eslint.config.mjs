@@ -14,7 +14,7 @@ export default antfu(
         yaml: false,
 
         ignores: [
-            '**/db.d.ts',
+            '**/schema.d.ts',
         ],
     },
     {

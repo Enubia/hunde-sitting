@@ -1,4 +1,4 @@
-import type { Schema } from './schema/index.js';
+import type { DB } from './schema.js';
 
 import { injectable } from 'inversify';
 import { Kysely, PostgresDialect } from 'kysely';
@@ -10,9 +10,9 @@ export const DatabaseProviderSymbol = Symbol.for('DatabaseProvider');
 
 @injectable()
 export class DatabaseProvider {
-    readonly db: Kysely<Schema>;
+    readonly db: Kysely<DB>;
     constructor() {
-        this.db = new Kysely<Schema>({
+        this.db = new Kysely<DB>({
             dialect: new PostgresDialect({
                 pool: new pg.Pool({
                     database: config.POSTGRES_DB,

@@ -8,7 +8,7 @@
         "clean": "rm -rf dist && rm tsconfig.tsbuildinfo",
         "debug": "tsx watch --inspect-brk src/index.ts",
         "dev": "tsx watch src/index.ts",
-        "generate-schema": "pnpm exec kysely-codegen --default-schema=public --include-pattern='public.*' --dialect postgres --env-file .env --out-file ./src/db/schema/db.d.ts",
+        "generate-schema": "pnpm exec kysely-codegen --default-schema=public --include-pattern='public.*' --dialect postgres --env-file .env --out-file ./src/db/schema.d.ts",
         "migrate:down": "pnpm exec kysely migrate:down",
         "migrate:latest": "pnpm exec kysely migrate:latest",
         "migrate:list": "pnpm exec kysely migrate:list",

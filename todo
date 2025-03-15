@@ -1,9 +1,10 @@
 Api:
     Database:
         Revisit db tables:
-            ☐ check core tables for missing/unnecessary columns
-            ☐ add indexes on foreign keys
-            ☐ rethink user roles, do we need them? (probably not in the beginning)
+            ✔ check core tables for missing/unnecessary columns @done(25-03-15 11:34)
+            ✔ add indexes on foreign keys @done(25-03-15 11:34)
+            ✔ rethink user roles, do we need them? (probably not in the beginning) @done(25-03-15 10:46)
+            ☐ check indexes (single, composite)
 
         ☐ check postgres connection pool size (see if we can increase it to 10, depending on server cpu and memory)
     
