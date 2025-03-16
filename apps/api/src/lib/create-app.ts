@@ -1,3 +1,5 @@
+import type LoggerFactory from './logger/loggerfactory.js';
+
 import { logger } from 'hono/logger';
 import { requestId } from 'hono/request-id';
 
@@ -6,13 +8,13 @@ import { generateRequestId } from '#shared/utils.js';
 
 import createRouter from './create-router.js';
 
-export default function createApp() {
+export default function createApp(logFunctions: ReturnType<LoggerFactory['for']>) {
     const app = createRouter();
 
     app
         .use((c, next) => requestId({ generator: generateRequestId(c) })(c, next))
         .use((c, next) => {
-            return logger(logFunction(c))(c, next);
+            return logger(logFunction(c, logFunctions))(c, next);
         })
         .use(
             '*',
@@ -22,12 +24,14 @@ export default function createApp() {
             },
         )
         .notFound((c) => {
+            c.get('log').warn('Not Found');
+
             return c.json({
                 error: 'Not Found',
             }, 404);
         })
         .onError((error, c) => {
-            c.get('log').critical(error);
+            log.critical(error);
 
             return c.json({
                 error: 'Internal Server Error',

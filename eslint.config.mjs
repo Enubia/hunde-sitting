@@ -58,11 +58,19 @@ export default antfu(
         },
     },
     {
-        files: ['**/migrations/**', '**/seeds/**'],
+        files: ['**/migrations/**', '**/seeds/**', '**/logger*'],
 
         rules: {
             'no-console': 'off',
             'unused-imports/no-unused-vars': 'off',
+        },
+    },
+    {
+        files: ['**/*.d.ts'],
+
+        rules: {
+            'vars-on-top': 'off',
+            'no-var': 'off',
         },
     },
 );

@@ -3,9 +3,17 @@ import { z } from 'zod';
 
 loadEnv();
 
+const logLevels = ['debug', 'info', 'warn', 'error', 'critical'] as const;
+const logFormat = ['console', 'file'] as const;
+const nodeEnv = ['development', 'production', 'test'] as const;
+
 const zodEnv = z.object({
     // Server
-    PORT: z.number({ coerce: true }),
+    PORT: z.number({ coerce: true }).default(3000),
+    LOG_FORMAT: z.enum(logFormat).default('console'),
+    LOG_LEVEL: z.enum(logLevels).default('info'),
+    NODE_ENV: z.enum(nodeEnv).default('development'),
+
     // Database
     POSTGRES_DB: z.string(),
     POSTGRES_HOST: z.string(),

@@ -26,6 +26,9 @@
         "allowSyntheticDefaultImports": true,
         "verbatimModuleSyntax": true
     },
+    "files": [
+        "@types/lib.global.d.ts"
+    ],
     "include": [
         "src"
     ],

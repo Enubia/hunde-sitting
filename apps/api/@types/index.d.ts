@@ -1,5 +1,5 @@
 import { createApp } from '../src/lib/create-app';
-import { registerRoutes } from '../src/registerroutes';
+import { registerRoutes } from '../src/routes';
 
 // stand alone router type used for api client
 const router = registerRoutes(createApp());

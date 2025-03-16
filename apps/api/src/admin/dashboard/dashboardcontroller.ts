@@ -11,6 +11,8 @@ const router = createRouter()
     .get('/', async (c) => {
         const limit = c.req.query('limit');
 
+        log.info('Getting dashboard data', { limit });
+
         if (limit && Number.isNaN(limit)) {
             return c.json({
                 error: 'Invalid limit',

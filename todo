@@ -15,5 +15,7 @@ Api:
         ☐ redis? (probably not for the beginning since server resources are limited)
         ☐ in-memory storage?
 
+    Logging:
+        ☐ revisit outgoing log format
 Web:
     ☐ maybe look into leaflet.js for map rendering
