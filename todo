@@ -17,5 +17,7 @@ Api:
 
     Logging:
         ☐ revisit outgoing log format
+        ☐ logger cannot handle rotating logs, needs to be fixed
+        ☐ add timestamp as prefix to log messages
 Web:
     ☐ maybe look into leaflet.js for map rendering
