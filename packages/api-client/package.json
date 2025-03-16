@@ -5,7 +5,7 @@
     "main": "./dist/index.js",
     "scripts": {
         "build": "pnpm clean && tsc",
-        "clean": "rm -rf dist && rm -rf .turbo",
+        "clean": "rm -rf dist",
         "dev": "tsx watch src/index.ts",
         "lint": "eslint -c ../../eslint.config.mjs .",
         "check-types": "tsc --noEmit"
