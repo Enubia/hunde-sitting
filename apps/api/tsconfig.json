@@ -14,11 +14,10 @@
         "moduleResolution": "nodenext",
 
         "paths": {
+            "#admin/*": ["./src/admin/*"],
             "#db/*": ["./src/db/*"],
             "#lib/*": ["./src/lib/*"],
-            "#repositories/*": ["./src/repositories/*"],
-            "#services/*": ["./src/services/*"],
-            "#types/*": ["./src/types/*"]
+            "#shared/*": ["./src/shared/*"]
         },
 
         "resolveJsonModule": true,

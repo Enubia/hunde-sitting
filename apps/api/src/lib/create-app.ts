@@ -1,10 +1,10 @@
 import { logger } from 'hono/logger';
 import { requestId } from 'hono/request-id';
-import { notFound, onError, serveEmojiFavicon } from 'stoker/middlewares';
+
+import { logFunction } from '#shared/middlewares/index.js';
+import { generateRequestId } from '#shared/utils.js';
 
 import createRouter from './create-router.js';
-import logFunction from './logger.js';
-import { generateRequestId } from './utils.js';
 
 export default function createApp() {
     const app = createRouter();
@@ -14,7 +14,6 @@ export default function createApp() {
         .use((c, next) => {
             return logger(logFunction(c))(c, next);
         })
-        .use(serveEmojiFavicon('🔥'))
         .use(
             '*',
             async (_c, next) => {
@@ -22,8 +21,18 @@ export default function createApp() {
                 return next();
             },
         )
-        .notFound(notFound)
-        .onError(onError);
+        .notFound((c) => {
+            return c.json({
+                error: 'Not Found',
+            }, 404);
+        })
+        .onError((error, c) => {
+            c.get('log').critical(error);
+
+            return c.json({
+                error: 'Internal Server Error',
+            }, 500);
+        });
 
     return app;
 }

@@ -1,10 +1,11 @@
-import type { DB, DogBreeds, ServiceType, Sex, VaccinationStatus, VerificationStatus } from '../schema';
 import type { Insertable, Kysely } from 'kysely';
+
+import type { DB, DogBreeds, ServiceType, Sex, VaccinationStatus, VerificationStatus } from '../schema';
 
 import { faker } from '@faker-js/faker';
 import { sql } from 'kysely';
 
-import { dogBreeds } from '../dogbrees';
+import { dogBreeds } from '../dogbreeds';
 
 async function cleanup(db: Kysely<DB>): Promise<void> {
     console.log('🧹 Cleaning up database...');

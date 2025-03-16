@@ -2,3 +2,8 @@
 
 GET {{endpoint}}/admin/dashboard-data?limit=2
 Content-Type: application/json
+
+###
+
+GET {{endpoint}}/asdf
+Content-Type: application/json

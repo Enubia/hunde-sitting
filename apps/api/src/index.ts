@@ -8,7 +8,7 @@ import { DatabaseProviderSymbol } from './db/databaseprovider.js';
 import { config } from './lib/config.js';
 import createApp from './lib/create-app.js';
 import container from './lib/ioc.js';
-import { registerRoutes } from './routes/index.js';
+import { registerRoutes } from './registerroutes.js';
 
 await container.get<DatabaseProvider>(DatabaseProviderSymbol).connect();
 

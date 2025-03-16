@@ -56,9 +56,6 @@ importers:
       reflect-metadata:
         specifier: 0.2.2
         version: 0.2.2
-      stoker:
-        specifier: 1.4.2
-        version: 1.4.2(@asteasolutions/zod-to-openapi@7.3.0(zod@3.24.2))(hono@4.7.4)(openapi3-ts@4.4.0)
       zod:
         specifier: 3.24.2
         version: 3.24.2
@@ -204,11 +201,6 @@ packages:
 
   '@antfu/install-pkg@1.0.0':
     resolution: {integrity: sha512-xvX6P/lo1B3ej0OsaErAjqgFYzYVcJpamjLAFLYh9vRJngBrMoUG7aVnrGTeqM7yxbyTD5p3F2+0/QUEh8Vzhw==}
-
-  '@asteasolutions/zod-to-openapi@7.3.0':
-    resolution: {integrity: sha512-7tE/r1gXwMIvGnXVUdIqUhCU1RevEFC4Jk6Bussa0fk1ecbnnINkZzj1EOAJyE/M3AI25DnHT/zKQL1/FPFi8Q==}
-    peerDependencies:
-      zod: ^3.20.2
 
   '@babel/code-frame@7.26.2':
     resolution: {integrity: sha512-RJlIHRueQgwWitWgF8OdFYGZX328Ax5BCemNGlqHfplnRT9ESi8JkFlvaVYbS+UubVY6dpv87Fs2u5M29iNFVQ==}
@@ -3513,9 +3505,6 @@ packages:
     peerDependencies:
       typescript: ^5.x
 
-  openapi3-ts@4.4.0:
-    resolution: {integrity: sha512-9asTNB9IkKEzWMcHmVZE7Ts3kC9G7AFHfs8i7caD8HbI76gEjdkId4z/AkP83xdZsH7PLAnnbl47qZkXuxpArw==}
-
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
@@ -4246,17 +4235,6 @@ packages:
   std-env@3.8.1:
     resolution: {integrity: sha512-vj5lIj3Mwf9D79hBkltk5qmkFI+biIKWS2IBxEyEU3AX1tUf7AoL8nSazCOiiqQsGKIq01SClsKEzweu34uwvA==}
 
-  stoker@1.4.2:
-    resolution: {integrity: sha512-zna86ZzC3fnMOIkuO+1vRMfcRw7SpC/7yafRb0u8DwDVig2pPh6POVnGB7t2A5t/rMvyr7hE7tjXTPvW8bhJKg==}
-    peerDependencies:
-      '@asteasolutions/zod-to-openapi': ^7.0.0
-      '@hono/zod-openapi': '>=0.16.0'
-      hono: ^4.0.0
-      openapi3-ts: ^4.4.0
-    peerDependenciesMeta:
-      '@hono/zod-openapi':
-        optional: true
-
   streamx@2.22.0:
     resolution: {integrity: sha512-sLh1evHOzBy/iWRiR6d1zRcLao4gGZr3C1kzNz4fopCOKJb6xD9ub8Mpi9Mr1R6id5o43S+d93fI48UC5uM9aw==}
 
@@ -4980,11 +4958,6 @@ snapshots:
     dependencies:
       package-manager-detector: 0.2.11
       tinyexec: 0.3.2
-
-  '@asteasolutions/zod-to-openapi@7.3.0(zod@3.24.2)':
-    dependencies:
-      openapi3-ts: 4.4.0
-      zod: 3.24.2
 
   '@babel/code-frame@7.26.2':
     dependencies:
@@ -8979,10 +8952,6 @@ snapshots:
       typescript: 5.8.2
       yargs-parser: 21.1.1
 
-  openapi3-ts@4.4.0:
-    dependencies:
-      yaml: 2.7.0
-
   optionator@0.9.4:
     dependencies:
       deep-is: 0.1.4
@@ -9697,12 +9666,6 @@ snapshots:
   statuses@2.0.1: {}
 
   std-env@3.8.1: {}
-
-  stoker@1.4.2(@asteasolutions/zod-to-openapi@7.3.0(zod@3.24.2))(hono@4.7.4)(openapi3-ts@4.4.0):
-    dependencies:
-      '@asteasolutions/zod-to-openapi': 7.3.0(zod@3.24.2)
-      hono: 4.7.4
-      openapi3-ts: 4.4.0
 
   streamx@2.22.0:
     dependencies:

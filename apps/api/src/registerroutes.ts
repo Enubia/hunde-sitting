@@ -1,13 +1,12 @@
-import type { AppEnv } from '../types/appenv.js';
 import type { Hono } from 'hono';
 
-import admin from './admin.route.js';
-import index from './index.route.js';
+import type { AppEnv } from '#shared/types/appenv.js';
+
+import admincontroller from '#admin/admincontroller.js';
 
 export function registerRoutes(app: Hono<AppEnv>) {
     return app
-        .route('/', index)
-        .route('/admin', admin)
+        .route('/admin', admincontroller)
         .get('/health', (c) => {
             return c.json({
                 status: 'ok',

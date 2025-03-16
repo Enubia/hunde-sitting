@@ -3,7 +3,7 @@ import type { Context } from 'hono';
 
 import chalk from 'chalk';
 
-export default function logFunction(c: Context) {
+export function logFunction(c: Context) {
     return (...args: unknown[]) => {
         const id = c.get('requestId');
 
