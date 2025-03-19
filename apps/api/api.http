@@ -1,6 +1,6 @@
 @endpoint = http://localhost:3000
 
-GET {{endpoint}}/admin/dashboard-data?limit=2
+GET {{endpoint}}/admin/dashboard-data?limit=10
 Content-Type: application/json
 
 ###

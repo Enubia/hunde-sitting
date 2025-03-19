@@ -16,8 +16,9 @@ Api:
         ☐ in-memory storage?
 
     Logging:
-        ☐ revisit outgoing log format
+        ✔ revisit outgoing log format @done(25-03-19 15:14)
         ☐ logger cannot handle rotating logs, needs to be fixed
-        ☐ add timestamp as prefix to log messages
+        ☐ add requestLog functions which have the requestId assigned to them so that we can see what the request was doing
+        ✔ add timestamp as prefix to log messages @done(25-03-19 15:14)
 Web:
     ☐ maybe look into leaflet.js for map rendering

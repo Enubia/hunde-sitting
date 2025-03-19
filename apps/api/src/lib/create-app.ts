@@ -24,8 +24,6 @@ export default function createApp(logFunctions: ReturnType<LoggerFactory['for']>
             },
         )
         .notFound((c) => {
-            c.get('log').warn('Not Found');
-
             return c.json({
                 error: 'Not Found',
             }, 404);

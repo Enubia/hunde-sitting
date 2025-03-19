@@ -14,7 +14,11 @@ export default class FileLogger {
         this.writeStream = fs.createWriteStream(this.filePath, { flags: 'a' });
     }
 
-    log(message: string) {
+    log(message?: string) {
+        if (!message) {
+            return;
+        }
+
         this.writeToFile(`${message}\n`);
     }
 
