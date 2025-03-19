@@ -205,7 +205,7 @@ export default class LoggerFactory {
             return;
         }
 
-        const timeStamp = new Date().toISOString();
+        const timeStamp = `[${new Date().toISOString()}]`;
 
         const _args: unknown[] = [];
 
@@ -221,7 +221,7 @@ export default class LoggerFactory {
 
         if (prefix === '') {
             // no requestId, assume it's a log somewhere in the code base
-            const message = `${timeStamp} log.${level.toUpperCase()} ${logMessage} ${_args.join(' ')}`;
+            const message = `${timeStamp} log.${level.toUpperCase()}: ${logMessage} ${_args.join(' ')}`;
 
             return this.applyColors(message, level, useColor, status);
         }
@@ -232,7 +232,7 @@ export default class LoggerFactory {
             message += ` [${method}]`;
         }
 
-        message += ` log.${level.toUpperCase()}`;
+        message += ` log.${level.toUpperCase()}:`;
 
         if (logData) {
             message += ` ${logData}`;
