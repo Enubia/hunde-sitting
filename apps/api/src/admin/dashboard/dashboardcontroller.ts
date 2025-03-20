@@ -12,7 +12,11 @@ const router = createRouter()
     .get('/', dashboardQueryValidator, async (c) => {
         const limit = c.req.query('limit');
 
-        log.info('Getting dashboard data', limit);
+        try {
+            log.debug('Getting dashboard data', { limit });
+        } catch (error) {
+            console.error('Error in logging', error);
+        }
 
         const data = await dashboardService.getDashboardData(limit);
 

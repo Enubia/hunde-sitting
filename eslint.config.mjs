@@ -53,7 +53,41 @@ export default antfu(
             'style/quote-props': ['error', 'as-needed'],
             'style/quotes': ['error', 'single', { avoidEscape: true }],
             'ts/consistent-type-definitions': 'off',
-            'ts/member-ordering': 'error',
+            'ts/member-ordering': ['error', {
+                classes: {
+                    order: 'natural-case-insensitive',
+                    memberTypes: [
+                        // Index signature
+                        // No accessibility for index signature.
+
+                        // Fields
+                        'public-field', // = ["public-static-field", "public-instance-field"]
+                        'protected-field', // = ["protected-static-field", "protected-instance-field"]
+                        'private-field', // = ["private-static-field", "private-instance-field"]
+
+                        // Static initialization
+                        // No accessibility for static initialization.
+
+                        // Constructors
+                        // Only the accessibility of constructors is configurable. See below.
+
+                        // Getters
+                        'public-get', // = ["public-static-get", "public-instance-get"]
+                        'protected-get', // = ["protected-static-get", "protected-instance-get"]
+                        'private-get', // = ["private-static-get", "private-instance-get"]
+
+                        // Setters
+                        'public-set', // = ["public-static-set", "public-instance-set"]
+                        'protected-set', // = ["protected-static-set", "protected-instance-set"]
+                        'private-set', // = ["private-static-set", "private-instance-set"]
+
+                        // Methods
+                        'public-method', // = ["public-static-method", "public-instance-method"]
+                        'protected-method', // = ["protected-static-method", "protected-instance-method"]
+                        'private-method', // = ["private-static-method", "private-instance-method"]
+                    ],
+                },
+            }],
             'unused-imports/no-unused-imports': 'warn',
         },
     },

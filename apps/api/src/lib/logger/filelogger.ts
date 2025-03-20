@@ -4,6 +4,7 @@ import path from 'node:path';
 export default class FileLogger {
     private filePath: string;
     private writeStream: fs.WriteStream;
+
     constructor() {
         this.filePath = path.join(process.cwd(), 'logs', this.getFileName());
 
@@ -14,16 +15,16 @@ export default class FileLogger {
         this.writeStream = fs.createWriteStream(this.filePath, { flags: 'a' });
     }
 
+    closeStream() {
+        this.writeStream.close();
+    }
+
     log(message?: string) {
         if (!message) {
             return;
         }
 
         this.writeToFile(`${message}\n`);
-    }
-
-    closeStream() {
-        this.writeStream.close();
     }
 
     private getFileName() {

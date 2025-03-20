@@ -7,23 +7,30 @@ function determineLogLevel(c: Context, ...args: unknown[]) {
 
     const status = new LoggerFactory().stripColorsFromMessage(lastArg as string);
 
-    if (status.startsWith('4')) {
-        c.get('log').warn(...args);
-    }
+    try {
+        if (status.startsWith('4')) {
+            c.get('requestLog').warn(...args);
+        }
 
-    if (status.startsWith('5')) {
-        c.get('log').error(...args);
-    }
+        if (status.startsWith('5')) {
+            c.get('requestLog').error(...args);
+        }
 
-    c.get('log').info(...args);
+        c.get('requestLog').info(...args);
+    } catch (error) {
+        console.error('Error in logging', error);
+    }
 }
 
 export function logFunction(c: Context, logFunctions: ReturnType<LoggerFactory['for']>) {
     return (...args: unknown[]) => {
         const id = c.get('requestId');
 
-        c.set('log', logFunctions(id));
-
-        determineLogLevel(c, ...args);
+        try {
+            c.set('requestLog', logFunctions(id));
+            determineLogLevel(c, ...args);
+        } catch (error) {
+            console.error('Error in logging', error);
+        }
     };
 }

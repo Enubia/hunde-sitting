@@ -33,14 +33,14 @@ const server = serve({
     process.on(event, (error) => {
         logFunctions().critical(error);
 
-        loggerFactory.logger?.closeStream();
+        loggerFactory.fileLogger?.closeStream();
         process.exit(1);
     });
 });
 
 ['SIGTERM', 'SIGINT'].forEach((signal) => {
     process.on(signal, () => {
-        loggerFactory.logger?.closeStream();
+        loggerFactory.fileLogger?.closeStream();
 
         server.close(() => {
             process.exit(0);

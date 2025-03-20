@@ -5,7 +5,7 @@ export type AppEnv = {
         PORT: number;
     };
     Variables: {
-        log: {
+        requestLog: {
             debug: (...args: unknown[]) => void;
             info: (...args: unknown[]) => void;
             warn: (...args: unknown[]) => void;

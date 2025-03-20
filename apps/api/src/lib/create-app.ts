@@ -29,7 +29,7 @@ export default function createApp(logFunctions: ReturnType<LoggerFactory['for']>
             }, 404);
         })
         .onError((error, c) => {
-            log.critical(error);
+            log.critical('Unexpected crash', error.stack);
 
             return c.json({
                 error: 'Internal Server Error',

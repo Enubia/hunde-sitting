@@ -1,13 +1,7 @@
-interface Logger {
-    debug: (...args: unknown[]) => void;
-    info: (...args: unknown[]) => void;
-    warn: (...args: unknown[]) => void;
-    error: (...args: unknown[]) => void;
-    critical: (...args: unknown[]) => void;
-};
+import type LoggerFactory from '#lib/logger/loggerfactory.ts';
 
 declare global {
-    var log: Logger;
+    var log: ReturnType<LoggerFactory['assignLogFunctions']>;
 }
 
 export {};
