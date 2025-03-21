@@ -63,9 +63,14 @@ export default class FileLogger {
     }
 
     private rotateFile() {
-        this.writeStream.close();
-        this.filePath = path.join(process.cwd(), 'logs', this.getFileName());
-        this.writeStream = fs.createWriteStream(this.filePath, { flags: 'a' });
+        this.writeStream.close((err) => {
+            if (err) {
+                console.error('Error closing file:', err);
+            }
+
+            this.filePath = path.join(process.cwd(), 'logs', this.getFileName());
+            this.writeStream = fs.createWriteStream(this.filePath, { flags: 'a' });
+        });
     }
 
     private writeToFile(message: string) {
