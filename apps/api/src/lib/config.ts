@@ -11,15 +11,15 @@ const zodEnv = z.object({
     // Server
     PORT: z.number({ coerce: true }).default(3000),
     LOG_FORMAT: z.enum(logFormat).default('console'),
-    LOG_LEVEL: z.enum(logLevels).default('info'),
+    LOG_LEVEL: z.enum(logLevels).default('debug'),
     NODE_ENV: z.enum(nodeEnv).default('development'),
 
     // Database
-    POSTGRES_DB: z.string(),
-    POSTGRES_HOST: z.string(),
-    POSTGRES_USER: z.string(),
-    POSTGRES_PASSWORD: z.string(),
-    POSTGRES_PORT: z.number({ coerce: true }),
+    POSTGRES_DB: z.string().default('postgres'),
+    POSTGRES_HOST: z.string().default('localhost'),
+    POSTGRES_USER: z.string().default('postgres'),
+    POSTGRES_PASSWORD: z.string().default('postgres'),
+    POSTGRES_PORT: z.number({ coerce: true }).default(5432),
 });
 
 let schema: z.infer<typeof zodEnv>;
