@@ -6,7 +6,6 @@
     "scripts": {
         "build": "pnpm clean && tsc && tsc-alias",
         "clean": "rm -rf dist && rm tsconfig.tsbuildinfo || true",
-        "debug": "tsx watch --inspect-brk src/index.ts",
         "dev": "nodemon",
         "generate-schema": "pnpm exec kysely-codegen --default-schema=public --include-pattern='public.*' --dialect postgres --env-file .env --out-file ./src/db/schema.d.ts",
         "migrate:down": "pnpm exec kysely migrate:down",
@@ -20,7 +19,6 @@
         "migrate:up": "pnpm exec kysely migrate:up",
         "seed": "pnpm exec kysely seed",
         "lint": "eslint -c ../../eslint.config.mjs .",
-        "start:db": "docker compose up",
         "start": "node dist/index.js",
         "check-types": "tsc --noEmit"
     },

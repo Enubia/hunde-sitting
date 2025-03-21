@@ -1,4 +1,5 @@
 import type { DashboardRepository } from '#admin/dashboard/dashboardrepository.js';
+import type { RequestLog } from '#lib/logger/loggerfactory.js';
 
 import { inject, injectable } from 'inversify';
 
@@ -13,7 +14,9 @@ export class DashboardService {
         private readonly repository: DashboardRepository,
     ) {}
 
-    async getDashboardData(limit?: string) {
+    async getDashboardData(requestLog: RequestLog, limit?: string) {
+        requestLog.info('Fetching dashboard data', { limit });
+
         const data = await this.repository.getStats(limit);
 
         return data;

@@ -8,7 +8,6 @@
         "clean": "turbo clean",
         "start:db": "cd ./apps/api && docker compose up",
         "stop:db": "cd ./apps/api && docker compose down",
-        "debug:api": "turbo debug --filter @hunde-sitting/api",
         "dev": "turbo dev",
         "dev:apps": "turbo dev --filter={./apps/*}",
         "dev:api": "turbo dev --filter @hunde-sitting/api",

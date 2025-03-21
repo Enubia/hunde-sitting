@@ -3,29 +3,32 @@ import chalk from 'chalk';
 import { config } from '../config.js';
 import FileLogger from './filelogger.js';
 
+export type RequestLog = ReturnType<LoggerFactory['assignLogFunctions']>;
+
 export default class LoggerFactory {
-    private _fileLogger: FileLogger | null = null;
+    private _fileLogger: FileLogger;
+
+    constructor() {
+        this._fileLogger = new FileLogger();
+    }
 
     /**
      * Only available when LOG_FORMAT is set to `file`
      */
-    get fileLogger() {
+    get fileLoggerInstance() {
         return this._fileLogger;
     }
 
-    applyGlobalLogger(preparedLogger: ReturnType<LoggerFactory['for']>) {
-        globalThis.log = preparedLogger();
+    applyGlobalLogger(logFunctions: ReturnType<LoggerFactory['applyLogLevel']>) {
+        globalThis.log = logFunctions;
     }
 
-    for(type: typeof config.LOG_FORMAT) {
-        switch (type) {
-            case 'console':
-                return this.createConsoleLogger();
-            case 'file':
-                return this.createFileLogger();
-            default:
-                throw new Error('Unknown logger type');
-        }
+    createLogger() {
+        return (requestId?: string) => {
+            const logPrefix = this.getLogPrefix(requestId);
+
+            return this.assignLogFunctions(logPrefix);
+        };
     }
 
     stripColorsFromMessage(message: string) {
@@ -33,7 +36,8 @@ export default class LoggerFactory {
         return message.replace(/\x1B\[\d+m/g, '');
     };
 
-    private applyColors(message: string, level: string, useColor?: boolean, status?: string) {
+    private applyColors(message: string, level: string, status?: string) {
+        const useColor = config.NODE_ENV === 'development';
         let colorizedMessage = message;
 
         if (useColor) {
@@ -109,15 +113,12 @@ export default class LoggerFactory {
     }
 
     private assignLogFunctions(logPrefix: string) {
-        const applyColors = config.LOG_FORMAT === 'console';
-
         return this.applyLogLevel({
             debug: (...args: unknown[]) => this.logMessage(
                 this.prepareMessage(
                     logPrefix,
                     'debug',
                     args[0],
-                    applyColors,
                 ),
                 ...args.slice(1),
             ),
@@ -126,7 +127,6 @@ export default class LoggerFactory {
                     `${logPrefix}`,
                     'info',
                     args[0],
-                    applyColors,
                 ),
                 ...args.slice(1),
             ),
@@ -135,7 +135,6 @@ export default class LoggerFactory {
                     logPrefix,
                     'warn',
                     args[0],
-                    applyColors,
                 ),
                 ...args.slice(1),
             ),
@@ -144,7 +143,6 @@ export default class LoggerFactory {
                     logPrefix,
                     'error',
                     args[0],
-                    applyColors,
                 ),
                 ...args.slice(1),
             ),
@@ -153,29 +151,10 @@ export default class LoggerFactory {
                     logPrefix,
                     'critical',
                     args[0],
-                    applyColors,
                 ),
                 ...args.slice(1),
             ),
         });
-    }
-
-    private createConsoleLogger() {
-        return (requestId?: string) => {
-            const logPrefix = this.getLogPrefix(requestId);
-
-            return this.assignLogFunctions(logPrefix);
-        };
-    }
-
-    private createFileLogger() {
-        this._fileLogger = new FileLogger();
-
-        return (requestId?: string) => {
-            const logPrefix = this.getLogPrefix(requestId);
-
-            return this.assignLogFunctions(logPrefix);
-        };
     }
 
     private getLogPrefix(requestId?: string) {
@@ -183,56 +162,29 @@ export default class LoggerFactory {
     }
 
     private logMessage(message?: string, ...args: unknown[]) {
-        if (this._fileLogger && message) {
-            this._fileLogger.log(`${message} ${JSON.stringify(args)}`);
-        } else if (message) {
-            console.log(message, ...args);
+        if (!message) {
+            return;
         }
+
+        this._fileLogger.log(message, ...args);
     }
 
     private prepareMessage(
         prefix: string,
         level: typeof config.LOG_LEVEL,
         logMessage: unknown,
-        useColor: boolean,
     ) {
-        let [arrows, method, logData, status, time] = (logMessage as string).split(' ');
-
-        if (arrows === '<--') {
-            // don't log request start, only log request end (logs status and time)
-            return;
-        }
-
         const timeStamp = `[${new Date().toISOString()}]`;
 
         if (prefix === '') {
             // no requestId, assume it's a log somewhere in the code base
             const message = `${timeStamp} log.${level.toUpperCase()}: ${logMessage}`;
 
-            return this.applyColors(message, level, useColor, status);
+            return this.applyColors(message, level);
         }
 
-        let message = `${timeStamp} ${prefix}`;
+        const message = `${timeStamp} ${prefix} log.${level.toUpperCase()}: ${logMessage}`;
 
-        if (method) {
-            message += ` [${method}]`;
-        }
-
-        message += ` log.${level.toUpperCase()}:`;
-
-        if (logData) {
-            message += ` ${logData}`;
-        }
-
-        if (status) {
-            status = this.stripColorsFromMessage(status);
-            message += ` ${status}`;
-        }
-
-        if (time) {
-            message += ` ${time}`;
-        }
-
-        return this.applyColors(message, level, useColor, status);
+        return this.applyColors(message, level);
     }
 }

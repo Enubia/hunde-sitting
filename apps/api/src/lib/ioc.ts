@@ -12,7 +12,7 @@ container.bind<DatabaseProvider>(DatabaseProviderSymbol).to(DatabaseProvider).in
 container.bind<DashboardRepository>(DashboardRepositorySymbol).to(DashboardRepository).inSingletonScope();
 
 // services
-container.bind<DashboardService>(DashboardServiceSymbol).to(DashboardService).inSingletonScope();
+container.bind<DashboardService>(DashboardServiceSymbol).to(DashboardService);
 
 // controllers are managed by hono routes
 

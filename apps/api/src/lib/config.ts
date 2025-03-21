@@ -4,19 +4,17 @@ import { z } from 'zod';
 loadEnv();
 
 const logLevels = ['debug', 'info', 'warn', 'error', 'critical'] as const;
-const logFormat = ['console', 'file'] as const;
 const nodeEnv = ['development', 'production', 'test'] as const;
 
 const zodEnv = z.object({
     // Server
     PORT: z.number({ coerce: true }).default(3000),
-    LOG_FORMAT: z.enum(logFormat).default('console'),
     LOG_LEVEL: z.enum(logLevels).default('debug'),
     NODE_ENV: z.enum(nodeEnv).default('development'),
 
     // Database
     POSTGRES_DB: z.string().default('postgres'),
-    POSTGRES_HOST: z.string().default('localhost'),
+    POSTGRES_HOST: z.string().default('docker.host.internal'),
     POSTGRES_USER: z.string().default('postgres'),
     POSTGRES_PASSWORD: z.string().default('postgres'),
     POSTGRES_PORT: z.number({ coerce: true }).default(5432),

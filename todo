@@ -20,7 +20,7 @@ Api:
         ✔ revisit outgoing log format @done(25-03-19 15:14)
         ✔ add timestamp as prefix to log messages @done(25-03-19 15:14)
 
-        ☐ refactor logging: console logging is not needed because file-based logging is more straightforward to collect later on (grafana/sentry etc.)
+        ✔ refactor logging: console logging is not needed because file-based logging is more straightforward to collect later on (grafana/sentry etc.) @done(25-03-21 09:28)
         
         ☐ logger cannot handle rotating logs, needs to be fixed
         

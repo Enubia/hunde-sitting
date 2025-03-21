@@ -19,12 +19,22 @@ export default class FileLogger {
         this.writeStream.close();
     }
 
-    log(message?: string) {
+    log(message?: string, ...args: unknown[]) {
         if (!message) {
             return;
         }
 
-        this.writeToFile(`${message}\n`);
+        const _args: unknown[] = [];
+
+        for (const arg of args) {
+            if (typeof arg === 'object') {
+                _args.push(JSON.stringify(arg, null, 4));
+            } else {
+                _args.push(arg);
+            }
+        }
+
+        this.writeToFile(`${message} ${_args}\n`);
     }
 
     private getFileName() {

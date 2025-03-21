@@ -1,20 +1,21 @@
 import type LoggerFactory from './logger/loggerfactory.js';
 
-import { logger } from 'hono/logger';
 import { requestId } from 'hono/request-id';
 
-import { logFunction } from '#shared/middlewares/index.js';
 import { generateRequestId } from '#shared/utils.js';
 
 import createRouter from './create-router.js';
 
-export default function createApp(logFunctions: ReturnType<LoggerFactory['for']>) {
+export default function createApp(logFunctions: ReturnType<LoggerFactory['createLogger']>) {
     const app = createRouter();
 
     app
         .use((c, next) => requestId({ generator: generateRequestId(c) })(c, next))
         .use((c, next) => {
-            return logger(logFunction(c, logFunctions))(c, next);
+            // can be passed into the services methods
+            c.set('requestLog', logFunctions(c.get('requestId')));
+
+            return next();
         })
         .use(
             '*',
@@ -24,6 +25,8 @@ export default function createApp(logFunctions: ReturnType<LoggerFactory['for']>
             },
         )
         .notFound((c) => {
+            log.warn('Not Found', c.req.url);
+
             return c.json({
                 error: 'Not Found',
             }, 404);

@@ -1,19 +1,18 @@
-import type { Hono } from 'hono';
+import type { Context, Hono } from 'hono';
+
+import type LoggerFactory from '#lib/logger/loggerfactory.js';
 
 export type AppEnv = {
     Bindings: {
         PORT: number;
     };
     Variables: {
-        requestLog: {
-            debug: (...args: unknown[]) => void;
-            info: (...args: unknown[]) => void;
-            warn: (...args: unknown[]) => void;
-            error: (...args: unknown[]) => void;
-            critical: (...args: unknown[]) => void;
-        };
+        requestLog: ReturnType<LoggerFactory['applyLogLevel']>;
     };
 };
+
+// eslint-disable-next-line ts/no-empty-object-type
+export type MiddlewareContext = Context<AppEnv, string, {}>;
 
 // eslint-disable-next-line ts/no-empty-object-type
 export type AppAPI = Hono<AppEnv, {}>;

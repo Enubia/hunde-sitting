@@ -15,9 +15,10 @@ import { registerRoutes } from './routes.js';
 await container.get<DatabaseProvider>(DatabaseProviderSymbol).connect();
 
 const loggerFactory = new LoggerFactory();
-const logFunctions = loggerFactory.for(config.LOG_FORMAT);
 
-loggerFactory.applyGlobalLogger(logFunctions);
+const logFunctions = loggerFactory.createLogger();
+
+loggerFactory.applyGlobalLogger(logFunctions());
 
 const app = registerRoutes(createApp(logFunctions));
 
@@ -33,14 +34,14 @@ const server = serve({
     process.on(event, (error) => {
         logFunctions().critical(error);
 
-        loggerFactory.fileLogger?.closeStream();
+        loggerFactory.fileLoggerInstance.closeStream();
         process.exit(1);
     });
 });
 
 ['SIGTERM', 'SIGINT'].forEach((signal) => {
     process.on(signal, () => {
-        loggerFactory.fileLogger?.closeStream();
+        loggerFactory.fileLoggerInstance.closeStream();
 
         server.close(() => {
             process.exit(0);
