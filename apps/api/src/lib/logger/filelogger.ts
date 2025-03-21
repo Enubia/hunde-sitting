@@ -1,7 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+const FIVE_MINUTES = 60 * 5 * 1000;
+
 export default class FileLogger {
+    private fileDate: string = '';
     private filePath: string;
     private writeStream: fs.WriteStream;
 
@@ -13,6 +16,15 @@ export default class FileLogger {
         }
 
         this.writeStream = fs.createWriteStream(this.filePath, { flags: 'a' });
+
+        this.writeStream.on('error', (err) => {
+            console.error('Error writing to file:', err);
+            this.closeStream();
+        });
+
+        setInterval(() => {
+            this.checkCurrentDate();
+        }, FIVE_MINUTES);
     }
 
     closeStream() {
@@ -37,8 +49,23 @@ export default class FileLogger {
         this.writeToFile(`${message} ${_args}\n`);
     }
 
+    private checkCurrentDate() {
+        const currentDate = new Date().toISOString().split('T')[0];
+
+        if (currentDate !== this.fileDate) {
+            this.rotateFile();
+        }
+    }
+
     private getFileName() {
-        return `${new Date().toISOString().split('T')[0]}.log`;
+        this.fileDate = new Date().toISOString().split('T')[0];
+        return `${this.fileDate}.log`;
+    }
+
+    private rotateFile() {
+        this.writeStream.close();
+        this.filePath = path.join(process.cwd(), 'logs', this.getFileName());
+        this.writeStream = fs.createWriteStream(this.filePath, { flags: 'a' });
     }
 
     private writeToFile(message: string) {

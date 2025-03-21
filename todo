@@ -22,7 +22,7 @@ Api:
 
         ✔ refactor logging: console logging is not needed because file-based logging is more straightforward to collect later on (grafana/sentry etc.) @done(25-03-21 09:28)
         
-        ☐ logger cannot handle rotating logs, needs to be fixed
+        ✔ logger cannot handle rotating logs, needs to be fixed @done(25-03-21 09:37)
         
         ☐ add requestLog functions which have the requestId assigned to them so that we can see what the request was doing
         
