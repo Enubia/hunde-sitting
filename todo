@@ -24,7 +24,7 @@ Api:
         
         ✔ logger cannot handle rotating logs, needs to be fixed @done(25-03-21 09:37)
         
-        ☐ add requestLog functions which have the requestId assigned to them so that we can see what the request was doing
+        ✔ add requestLog functions which have the requestId assigned to them so that we can see what the request was doing @done(25-03-21 09:43)
         
 Web:
     ☐ maybe look into leaflet.js for map rendering

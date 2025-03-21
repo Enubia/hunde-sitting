@@ -31,11 +31,6 @@ export default class LoggerFactory {
         };
     }
 
-    stripColorsFromMessage(message: string) {
-        // eslint-disable-next-line no-control-regex
-        return message.replace(/\x1B\[\d+m/g, '');
-    };
-
     private applyColors(message: string, level: string, status?: string) {
         const useColor = config.NODE_ENV === 'development';
         let colorizedMessage = message;
