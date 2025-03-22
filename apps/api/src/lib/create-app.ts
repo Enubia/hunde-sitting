@@ -1,5 +1,3 @@
-import type { Context } from 'hono';
-
 import type LoggerFactory from './logger/loggerfactory.js';
 
 import { getConnInfo } from '@hono/node-server/conninfo';
@@ -25,22 +23,22 @@ export default function createApp(logFunctions: ReturnType<LoggerFactory['create
 
             c.get('requestLog').info(`${c.res.status} ${c.req.method} ${preparePath(c)} - took ${Date.now() - startTime}ms ${connInfo.remote.address?.replace('::ffff:', '')}`);
         })
-        .use(
-            '*',
-            async (_c, next) => {
-                // general middleware
-                return next();
-            },
-        )
+        // .use(
+        //     '*',
+        //     async (_c, next) => {
+        //         // general middleware
+        //         return next();
+        //     },
+        // )
         .notFound((c) => {
-            log.warn('Not Found', preparePath(c));
+            c.get('requestLog').warn('Not Found', preparePath(c));
 
             return c.json({
                 error: 'Not Found',
             }, 404);
         })
         .onError((error, c) => {
-            log.critical('Unexpected crash', error.stack);
+            c.get('requestLog').critical('Unexpected crash', error.stack);
 
             return c.json({
                 error: 'Internal Server Error',

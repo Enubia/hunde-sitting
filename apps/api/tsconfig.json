@@ -14,7 +14,7 @@
         "moduleResolution": "nodenext",
 
         "paths": {
-            "#admin/*": ["./src/admin/*"],
+            "#routes/*": ["./src/routes/*"],
             "#db/*": ["./src/db/*"],
             "#lib/*": ["./src/lib/*"],
             "#shared/*": ["./src/shared/*"]

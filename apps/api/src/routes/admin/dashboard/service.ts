@@ -1,9 +1,10 @@
-import type { DashboardRepository } from '#admin/dashboard/dashboardrepository.js';
 import type { RequestLog } from '#lib/logger/loggerfactory.js';
+
+import type { DashboardRepository } from './repository.js';
 
 import { inject, injectable } from 'inversify';
 
-import { DashboardRepositorySymbol } from '#admin/dashboard/dashboardrepository.js';
+import { DashboardRepositorySymbol } from './repository.js';
 
 export const DashboardServiceSymbol = Symbol.for('DashboardHandler');
 

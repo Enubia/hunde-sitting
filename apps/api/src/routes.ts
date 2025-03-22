@@ -2,7 +2,7 @@ import type { Hono } from 'hono';
 
 import type { AppEnv } from '#shared/types/appenv.js';
 
-import admincontroller from '#admin/admincontroller.js';
+import admincontroller from '#routes/admin/admin.router.js';
 
 export function registerRoutes(app: Hono<AppEnv>) {
     return app

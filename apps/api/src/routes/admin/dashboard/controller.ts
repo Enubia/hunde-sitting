@@ -1,10 +1,10 @@
-import type { DashboardService } from './dashboardservice.js';
+import type { DashboardService } from './service.js';
 
 import createRouter from '#lib/create-router.js';
 import container from '#lib/ioc.js';
 
-import { dashboardQueryValidator } from './dashboard.validator.js';
-import { DashboardServiceSymbol } from './dashboardservice.js';
+import { DashboardServiceSymbol } from './service.js';
+import { dashboardQueryValidator } from './validator.js';
 
 const dashboardService = container.get<DashboardService>(DashboardServiceSymbol);
 

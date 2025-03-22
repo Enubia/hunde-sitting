@@ -1,10 +1,10 @@
 @endpoint = http://localhost:3000
 
-GET {{endpoint}}/admin/dashboard-data?limit=10&page=1
+GET {{endpoint}}/admin/dashboard?limit=10&page=1
 Content-Type: application/json
 # x-request-id: 
 
 ###
 
-GET {{endpoint}}/asdf
+GET {{endpoint}}/admin
 Content-Type: application/json
