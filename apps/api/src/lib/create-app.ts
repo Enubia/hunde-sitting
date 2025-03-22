@@ -1,4 +1,4 @@
-import type LoggerProvider from './logger/loggerprovider.js';
+import type LogManager from './logger/logmanager.js';
 
 import { getConnInfo } from '@hono/node-server/conninfo';
 import { requestId } from 'hono/request-id';
@@ -7,7 +7,7 @@ import { generateRequestId, preparePath } from '#shared/utils.js';
 
 import createRouter from './create-router.js';
 
-export default function createApp(logFunctions: ReturnType<LoggerProvider['createLogger']>) {
+export default function createApp(logManager: LogManager) {
     const app = createRouter();
 
     app
@@ -17,9 +17,10 @@ export default function createApp(logFunctions: ReturnType<LoggerProvider['creat
         .use(async (c, next) => {
             const startTime = Date.now();
             const connInfo = getConnInfo(c);
+            const logFunctions = logManager.buildRequestLogger(c.get('requestId'));
 
             // can be passed into the services methods
-            c.set('requestLog', logFunctions(c.get('requestId')));
+            c.set('requestLog', logFunctions);
 
             await next();
 

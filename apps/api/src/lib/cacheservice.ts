@@ -1,4 +1,9 @@
-class CacheProvider {
+import { injectable } from 'inversify';
+
+export const CacheServiceSymbol = Symbol.for('CacheService');
+
+@injectable()
+export default class CacheService {
     private cache: Map<string, unknown>;
 
     constructor() {
@@ -25,5 +30,3 @@ class CacheProvider {
         this.cache.set(key, value);
     }
 }
-
-export default new CacheProvider();

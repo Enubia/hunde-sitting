@@ -4,7 +4,7 @@ import type { DatabaseProvider } from './db/databaseprovider.js';
 
 import { serve } from '@hono/node-server';
 
-import LoggerProvider from '#lib/logger/loggerprovider.js';
+import LogManager from '#lib/logger/logmanager.js';
 
 import { DatabaseProviderSymbol } from './db/databaseprovider.js';
 import { config } from './lib/config.js';
@@ -16,13 +16,11 @@ const db = container.get<DatabaseProvider>(DatabaseProviderSymbol);
 
 await db.connect();
 
-const loggerFactory = new LoggerProvider();
+const logManager = new LogManager();
 
-const logFunctions = loggerFactory.createLogger();
+logManager.applyGlobalLogger();
 
-loggerFactory.applyGlobalLogger(logFunctions());
-
-const app = registerRoutes(createApp(logFunctions));
+const app = registerRoutes(createApp(logManager));
 
 serve({
     fetch: app.fetch,
@@ -34,9 +32,9 @@ serve({
 
 ['unhandledRejection', 'uncaughtException'].forEach((event) => {
     process.on(event, async (error) => {
-        logFunctions().critical(error);
+        log.critical(error);
 
-        loggerFactory.fileLoggerInstance.closeStream();
+        logManager.fileLoggerInstance.closeStream();
 
         await db.close();
 
@@ -46,7 +44,7 @@ serve({
 
 ['SIGTERM', 'SIGINT'].forEach((signal) => {
     process.on(signal, async () => {
-        loggerFactory.fileLoggerInstance.closeStream();
+        logManager.fileLoggerInstance.closeStream();
 
         await db.close();
 

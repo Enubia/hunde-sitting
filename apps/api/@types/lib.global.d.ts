@@ -1,7 +1,7 @@
-import type LoggerProvider from '#lib/logger/loggerprovider.ts';
+import type LogManager from '#lib/logger/logmanager.ts';
 
 declare global {
-    var log: ReturnType<LoggerProvider['applyLogLevel']>;
+    var log: ReturnType<LogManager['applyLogLevel']>;
 }
 
 export {};

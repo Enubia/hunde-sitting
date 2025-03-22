@@ -3,9 +3,9 @@ import chalk from 'chalk';
 import { config } from '../config.js';
 import FileLogger from './filelogger.js';
 
-export type RequestLog = ReturnType<LoggerProvider['assignLogFunctions']>;
+export type RequestLog = ReturnType<LogManager['assignLogFunctions']>;
 
-export default class LoggerProvider {
+export default class LogManager {
     private _fileLogger: FileLogger;
 
     constructor() {
@@ -158,16 +158,18 @@ export default class LoggerProvider {
         return this.applyColors(message, level);
     }
 
-    applyGlobalLogger(logFunctions: ReturnType<LoggerProvider['applyLogLevel']>) {
-        globalThis.log = logFunctions;
+    applyGlobalLogger() {
+        globalThis.log = this.buildLogger();
     }
 
-    createLogger() {
-        return (requestId?: string) => {
-            const logPrefix = this.getLogPrefix(requestId);
+    buildLogger() {
+        return this.assignLogFunctions('');
+    }
 
-            return this.assignLogFunctions(logPrefix);
-        };
+    buildRequestLogger(requestId: string) {
+        const logPrefix = this.getLogPrefix(requestId);
+
+        return this.assignLogFunctions(logPrefix);
     }
 
     /**

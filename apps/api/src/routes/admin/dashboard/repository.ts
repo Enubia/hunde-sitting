@@ -9,8 +9,7 @@ export const DashboardRepositorySymbol = Symbol.for('DashboardRepository');
 @injectable()
 export class DashboardRepository {
     constructor(
-        @inject(DatabaseProviderSymbol)
-        private readonly provider: DatabaseProvider,
+        @inject(DatabaseProviderSymbol) private readonly provider: DatabaseProvider,
     ) {}
 
     async getStats(limit?: string) {

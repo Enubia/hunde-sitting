@@ -1,13 +1,13 @@
 import type { Context, Hono } from 'hono';
 
-import type LoggerProvider from '#lib/logger/loggerprovider.js';
+import type LogManager from '#lib/logger/logmanager.js';
 
 export type AppEnv = {
     Bindings: {
         PORT: number;
     };
     Variables: {
-        requestLog: ReturnType<LoggerProvider['applyLogLevel']>;
+        requestLog: ReturnType<LogManager['buildRequestLogger']>;
     };
 };
 
