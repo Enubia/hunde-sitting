@@ -38,7 +38,7 @@ export default class LoggerFactory {
         if (useColor) {
             switch (level) {
                 case 'debug':
-                    colorizedMessage = chalk.blueBright(message);
+                    colorizedMessage = chalk.green(message);
                     break;
                 case 'info':
                     colorizedMessage = chalk.white(message);

@@ -15,7 +15,7 @@ export class DashboardService {
     ) {}
 
     async getDashboardData(requestLog: RequestLog, limit?: string) {
-        requestLog.info('Fetching dashboard data', { limit });
+        requestLog.debug('Fetching dashboard data', { limit });
 
         const data = await this.repository.getStats(limit);
 

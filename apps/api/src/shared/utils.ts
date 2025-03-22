@@ -31,3 +31,11 @@ export function generateRequestId(c: Context) {
         return md5(generateRandomString(16));
     };
 }
+
+export function preparePath(c: Context) {
+    const url = new URL(c.req.url);
+    const path = url.pathname;
+    const params = url.searchParams.toString();
+
+    return path + (params ? `?${params}` : '');
+}
