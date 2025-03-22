@@ -31,35 +31,29 @@ export default class LoggerFactory {
         };
     }
 
-    private applyColors(message: string, level: string, status?: string) {
+    private applyColors(message: string, level: string) {
         const useColor = config.NODE_ENV === 'development';
         let colorizedMessage = message;
 
         if (useColor) {
-            if (status?.startsWith('4')) {
-                colorizedMessage = chalk.yellow(message);
-            } else if (status?.startsWith('5')) {
-                colorizedMessage = chalk.red(message);
-            } else {
-                switch (level) {
-                    case 'debug':
-                        colorizedMessage = chalk.blueBright(message);
-                        break;
-                    case 'info':
-                        colorizedMessage = chalk.white(message);
-                        break;
-                    case 'warn':
-                        colorizedMessage = chalk.yellow(message);
-                        break;
-                    case 'error':
-                        colorizedMessage = chalk.red(message);
-                        break;
-                    case 'critical':
-                        colorizedMessage = chalk.magenta(message);
-                        break;
-                    default:
-                        break;
-                }
+            switch (level) {
+                case 'debug':
+                    colorizedMessage = chalk.blueBright(message);
+                    break;
+                case 'info':
+                    colorizedMessage = chalk.white(message);
+                    break;
+                case 'warn':
+                    colorizedMessage = chalk.yellow(message);
+                    break;
+                case 'error':
+                    colorizedMessage = chalk.red(message);
+                    break;
+                case 'critical':
+                    colorizedMessage = chalk.magenta(message);
+                    break;
+                default:
+                    break;
             }
         }
 
