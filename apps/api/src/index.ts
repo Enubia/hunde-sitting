@@ -12,7 +12,9 @@ import createApp from './lib/create-app.js';
 import container from './lib/ioc.js';
 import { registerRoutes } from './routes.js';
 
-await container.get<DatabaseProvider>(DatabaseProviderSymbol).connect();
+const db = container.get<DatabaseProvider>(DatabaseProviderSymbol);
+
+await db.connect();
 
 const loggerFactory = new LoggerFactory();
 
@@ -22,7 +24,7 @@ loggerFactory.applyGlobalLogger(logFunctions());
 
 const app = registerRoutes(createApp(logFunctions));
 
-const server = serve({
+serve({
     fetch: app.fetch,
     port: config.PORT,
 }, (info) => {
@@ -31,20 +33,23 @@ const server = serve({
 });
 
 ['unhandledRejection', 'uncaughtException'].forEach((event) => {
-    process.on(event, (error) => {
+    process.on(event, async (error) => {
         logFunctions().critical(error);
 
         loggerFactory.fileLoggerInstance.closeStream();
+
+        await db.close();
+
         process.exit(1);
     });
 });
 
 ['SIGTERM', 'SIGINT'].forEach((signal) => {
-    process.on(signal, () => {
+    process.on(signal, async () => {
         loggerFactory.fileLoggerInstance.closeStream();
 
-        server.close(() => {
-            process.exit(0);
-        });
+        await db.close();
+
+        process.exit(0);
     });
 });
