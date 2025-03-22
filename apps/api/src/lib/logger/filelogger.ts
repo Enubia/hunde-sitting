@@ -6,6 +6,7 @@ const FIVE_MINUTES = 60 * 5 * 1000;
 export default class FileLogger {
     private fileDate: string = '';
     private filePath: string;
+    private interval: NodeJS.Timeout;
     private writeStream: fs.WriteStream;
 
     constructor() {
@@ -19,16 +20,24 @@ export default class FileLogger {
 
         this.writeStream.on('error', (err) => {
             console.error('Error writing to file:', err);
-            this.closeStream();
         });
 
-        setInterval(() => {
+        this.interval = setInterval(() => {
             this.checkCurrentDate();
         }, FIVE_MINUTES);
     }
 
     closeStream() {
-        this.writeStream.close();
+        return new Promise<void>((resolve) => {
+            clearInterval(this.interval);
+            this.writeStream.close((err) => {
+                if (err) {
+                    console.error('Error closing file:', err);
+                }
+
+                resolve();
+            });
+        });
     }
 
     log(message?: string, ...args: unknown[]) {
@@ -62,23 +71,17 @@ export default class FileLogger {
         return `${this.fileDate}.log`;
     }
 
-    private rotateFile() {
-        this.writeStream.close((err) => {
-            if (err) {
-                console.error('Error closing file:', err);
-            }
+    private async rotateFile() {
+        await this.closeStream();
 
-            this.filePath = path.join(process.cwd(), 'logs', this.getFileName());
-            this.writeStream = fs.createWriteStream(this.filePath, { flags: 'a' });
-        });
+        this.filePath = path.join(process.cwd(), 'logs', this.getFileName());
+        this.writeStream = fs.createWriteStream(this.filePath, { flags: 'a' });
+        this.interval = setInterval(() => {
+            this.checkCurrentDate();
+        }, FIVE_MINUTES);
     }
 
     private writeToFile(message: string) {
-        this.writeStream.write(message, (err) => {
-            if (err) {
-                console.error('Error writing to file:', err);
-                this.closeStream();
-            }
-        });
+        this.writeStream.write(message);
     }
 }
