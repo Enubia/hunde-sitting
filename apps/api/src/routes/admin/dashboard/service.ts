@@ -1,8 +1,10 @@
-import type { RequestLog } from '#lib/logger/loggerfactory.js';
+import type { RequestLog } from '#lib/logger/loggerprovider.js';
 
 import type { DashboardRepository } from './repository.js';
 
 import { inject, injectable } from 'inversify';
+
+import cache from '#lib/cacheprovider.js';
 
 import { DashboardRepositorySymbol } from './repository.js';
 
@@ -19,6 +21,8 @@ export class DashboardService {
         requestLog.debug('Fetching dashboard data', { limit });
 
         const data = await this.repository.getStats(limit);
+
+        cache.set('dashboardData', data);
 
         return data;
     }

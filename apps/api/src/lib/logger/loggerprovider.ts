@@ -3,32 +3,13 @@ import chalk from 'chalk';
 import { config } from '../config.js';
 import FileLogger from './filelogger.js';
 
-export type RequestLog = ReturnType<LoggerFactory['assignLogFunctions']>;
+export type RequestLog = ReturnType<LoggerProvider['assignLogFunctions']>;
 
-export default class LoggerFactory {
+export default class LoggerProvider {
     private _fileLogger: FileLogger;
 
     constructor() {
         this._fileLogger = new FileLogger();
-    }
-
-    /**
-     * Only available when LOG_FORMAT is set to `file`
-     */
-    get fileLoggerInstance() {
-        return this._fileLogger;
-    }
-
-    applyGlobalLogger(logFunctions: ReturnType<LoggerFactory['applyLogLevel']>) {
-        globalThis.log = logFunctions;
-    }
-
-    createLogger() {
-        return (requestId?: string) => {
-            const logPrefix = this.getLogPrefix(requestId);
-
-            return this.assignLogFunctions(logPrefix);
-        };
     }
 
     private applyColors(message: string, level: string) {
@@ -175,5 +156,24 @@ export default class LoggerFactory {
         const message = `${timeStamp} ${prefix} log.${level.toUpperCase()}: ${logMessage}`;
 
         return this.applyColors(message, level);
+    }
+
+    applyGlobalLogger(logFunctions: ReturnType<LoggerProvider['applyLogLevel']>) {
+        globalThis.log = logFunctions;
+    }
+
+    createLogger() {
+        return (requestId?: string) => {
+            const logPrefix = this.getLogPrefix(requestId);
+
+            return this.assignLogFunctions(logPrefix);
+        };
+    }
+
+    /**
+     * Only available when LOG_FORMAT is set to `file`
+     */
+    get fileLoggerInstance() {
+        return this._fileLogger;
     }
 }

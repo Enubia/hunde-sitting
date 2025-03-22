@@ -27,6 +27,33 @@ export default class FileLogger {
         }, FIVE_MINUTES);
     }
 
+    private checkCurrentDate() {
+        const currentDate = new Date().toISOString().split('T')[0];
+
+        if (currentDate !== this.fileDate) {
+            this.rotateFile();
+        }
+    }
+
+    private getFileName() {
+        this.fileDate = new Date().toISOString().split('T')[0];
+        return `${this.fileDate}.log`;
+    }
+
+    private async rotateFile() {
+        await this.closeStream();
+
+        this.filePath = path.join(process.cwd(), 'logs', this.getFileName());
+        this.writeStream = fs.createWriteStream(this.filePath, { flags: 'a' });
+        this.interval = setInterval(() => {
+            this.checkCurrentDate();
+        }, FIVE_MINUTES);
+    }
+
+    private writeToFile(message: string) {
+        this.writeStream.write(message);
+    }
+
     closeStream() {
         return new Promise<void>((resolve) => {
             clearInterval(this.interval);
@@ -56,32 +83,5 @@ export default class FileLogger {
         }
 
         this.writeToFile(`${message} ${_args}\n`);
-    }
-
-    private checkCurrentDate() {
-        const currentDate = new Date().toISOString().split('T')[0];
-
-        if (currentDate !== this.fileDate) {
-            this.rotateFile();
-        }
-    }
-
-    private getFileName() {
-        this.fileDate = new Date().toISOString().split('T')[0];
-        return `${this.fileDate}.log`;
-    }
-
-    private async rotateFile() {
-        await this.closeStream();
-
-        this.filePath = path.join(process.cwd(), 'logs', this.getFileName());
-        this.writeStream = fs.createWriteStream(this.filePath, { flags: 'a' });
-        this.interval = setInterval(() => {
-            this.checkCurrentDate();
-        }, FIVE_MINUTES);
-    }
-
-    private writeToFile(message: string) {
-        this.writeStream.write(message);
     }
 }

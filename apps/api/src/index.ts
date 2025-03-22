@@ -4,7 +4,7 @@ import type { DatabaseProvider } from './db/databaseprovider.js';
 
 import { serve } from '@hono/node-server';
 
-import LoggerFactory from '#lib/logger/loggerfactory.js';
+import LoggerProvider from '#lib/logger/loggerprovider.js';
 
 import { DatabaseProviderSymbol } from './db/databaseprovider.js';
 import { config } from './lib/config.js';
@@ -16,7 +16,7 @@ const db = container.get<DatabaseProvider>(DatabaseProviderSymbol);
 
 await db.connect();
 
-const loggerFactory = new LoggerFactory();
+const loggerFactory = new LoggerProvider();
 
 const logFunctions = loggerFactory.createLogger();
 

@@ -27,7 +27,8 @@
         "verbatimModuleSyntax": true
     },
     "files": [
-        "@types/lib.global.d.ts"
+        "@types/lib.global.d.ts",
+        "@types/ts-reset.d.ts"
     ],
     "include": [
         "src"

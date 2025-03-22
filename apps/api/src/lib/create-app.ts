@@ -1,4 +1,4 @@
-import type LoggerFactory from './logger/loggerfactory.js';
+import type LoggerProvider from './logger/loggerprovider.js';
 
 import { getConnInfo } from '@hono/node-server/conninfo';
 import { requestId } from 'hono/request-id';
@@ -7,11 +7,13 @@ import { generateRequestId, preparePath } from '#shared/utils.js';
 
 import createRouter from './create-router.js';
 
-export default function createApp(logFunctions: ReturnType<LoggerFactory['createLogger']>) {
+export default function createApp(logFunctions: ReturnType<LoggerProvider['createLogger']>) {
     const app = createRouter();
 
     app
+        // add request id to the context
         .use((c, next) => requestId({ generator: generateRequestId(c), headerName: 'x-request-identifier' })(c, next))
+        // setup logging and also log request timing after the request is done
         .use(async (c, next) => {
             const startTime = Date.now();
             const connInfo = getConnInfo(c);
@@ -23,13 +25,6 @@ export default function createApp(logFunctions: ReturnType<LoggerFactory['create
 
             c.get('requestLog').info(`${c.res.status} ${c.req.method} ${preparePath(c)} - took ${Date.now() - startTime}ms ${connInfo.remote.address?.replace('::ffff:', '')}`);
         })
-        // .use(
-        //     '*',
-        //     async (_c, next) => {
-        //         // general middleware
-        //         return next();
-        //     },
-        // )
         .notFound((c) => {
             c.get('requestLog').warn('Not Found', preparePath(c));
 

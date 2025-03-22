@@ -46,6 +46,26 @@ export default antfu(
                 ],
                 internalPattern: ['^#'],
             }],
+            'perfectionist/sort-classes': ['error', {
+                ignoreCase: true,
+                order: 'asc',
+                type: 'alphabetical',
+                groups: [
+                    'index-signature',
+                    'static-property',
+                    'static-block',
+                    ['protected-property', 'protected-accessor-property'],
+                    ['private-property', 'private-accessor-property'],
+                    ['property', 'accessor-property'],
+                    'constructor',
+                    'static-method',
+                    'protected-method',
+                    'private-method',
+                    'method',
+                    ['get-method', 'set-method'],
+                    'unknown',
+                ],
+            }],
             'style/brace-style': ['error', '1tbs'],
             'style/comma-dangle': ['error', 'always-multiline'],
             'style/eol-last': ['error', 'always'],
@@ -53,41 +73,6 @@ export default antfu(
             'style/quote-props': ['error', 'as-needed'],
             'style/quotes': ['error', 'single', { avoidEscape: true }],
             'ts/consistent-type-definitions': 'off',
-            'ts/member-ordering': ['error', {
-                classes: {
-                    order: 'natural-case-insensitive',
-                    memberTypes: [
-                        // Index signature
-                        // No accessibility for index signature.
-
-                        // Fields
-                        'public-field', // = ["public-static-field", "public-instance-field"]
-                        'protected-field', // = ["protected-static-field", "protected-instance-field"]
-                        'private-field', // = ["private-static-field", "private-instance-field"]
-
-                        // Static initialization
-                        // No accessibility for static initialization.
-
-                        // Constructors
-                        // Only the accessibility of constructors is configurable. See below.
-
-                        // Getters
-                        'public-get', // = ["public-static-get", "public-instance-get"]
-                        'protected-get', // = ["protected-static-get", "protected-instance-get"]
-                        'private-get', // = ["private-static-get", "private-instance-get"]
-
-                        // Setters
-                        'public-set', // = ["public-static-set", "public-instance-set"]
-                        'protected-set', // = ["protected-static-set", "protected-instance-set"]
-                        'private-set', // = ["private-static-set", "private-instance-set"]
-
-                        // Methods
-                        'public-method', // = ["public-static-method", "public-instance-method"]
-                        'protected-method', // = ["protected-static-method", "protected-instance-method"]
-                        'private-method', // = ["private-static-method", "private-instance-method"]
-                    ],
-                },
-            }],
             'unused-imports/no-unused-imports': 'warn',
         },
     },

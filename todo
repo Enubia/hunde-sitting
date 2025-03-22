@@ -14,7 +14,7 @@ Api:
     
     Caching:
         ☐ redis? (probably not for the beginning since server resources are limited)
-        ☐ in-memory storage?
+        ✔ in-memory storage? @done(25-03-22 11:42)
 
     Logging:
         ✔ revisit outgoing log format @done(25-03-19 15:14)
