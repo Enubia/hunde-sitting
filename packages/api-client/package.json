@@ -11,12 +11,12 @@
         "check-types": "tsc --noEmit"
     },
     "dependencies": {
-        "hono": "4.7.4"
+        "hono": "4.7.5"
     },
     "devDependencies": {
         "@hunde-sitting/api": "workspace:*",
-        "@types/node": "22.13.9",
+        "@types/node": "22.14.0",
         "tsx": "4.19.3",
-        "typescript": "5.8.2"
+        "typescript": "5.8.3"
     }
 }
