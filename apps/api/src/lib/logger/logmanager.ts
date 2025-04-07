@@ -22,7 +22,7 @@ export default class LogManager {
                     colorizedMessage = chalk.green(message);
                     break;
                 case 'info':
-                    colorizedMessage = chalk.white(message);
+                    colorizedMessage = message;
                     break;
                 case 'warn':
                     colorizedMessage = chalk.yellow(message);
@@ -146,14 +146,7 @@ export default class LogManager {
     ) {
         const timeStamp = `[${new Date().toISOString()}]`;
 
-        if (prefix === '') {
-            // no requestId, assume it's a log somewhere in the code base
-            const message = `${timeStamp} log.${level.toUpperCase()}: ${logMessage}`;
-
-            return this.applyColors(message, level);
-        }
-
-        const message = `${timeStamp} ${prefix} log.${level.toUpperCase()}: ${logMessage}`;
+        const message = `${timeStamp}${prefix === '' ? ` ${prefix} ` : ' '}log.${level.toUpperCase()}: ${logMessage}`;
 
         return this.applyColors(message, level);
     }
@@ -172,9 +165,6 @@ export default class LogManager {
         return this.assignLogFunctions(logPrefix);
     }
 
-    /**
-     * Only available when LOG_FORMAT is set to `file`
-     */
     get fileLoggerInstance() {
         return this._fileLogger;
     }
