@@ -12,8 +12,8 @@ export class DashboardRepository {
         @inject(DatabaseProviderSymbol) private readonly provider: DatabaseProvider,
     ) {}
 
-    async getStats(limit?: string) {
-        return await this.provider.db
+    getStats(limit?: string) {
+        return this.provider.db
             .selectFrom('users')
             .innerJoin('sitters', 'users.id', 'sitters.user_id')
             .selectAll()
