@@ -27,5 +27,8 @@
         "bootstrap": "5.3.5",
         "bootstrap-vue-next": "0.28.3",
         "sass": "1.86.3"
+    },
+    "lint-staged": {
+        "src/**/*.{ts,vue}": "eslint -c ../../eslint.config.mjs"
     }
 }

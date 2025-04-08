@@ -34,6 +34,6 @@
         ]
     },
     "simple-git-hooks": {
-        "pre-commit": "pnpm exec lint-staged && pnpm run check-types"
+        "pre-commit": "pnpm exec lint-staged && pnpm exec turbo check-types"
     }
 }
