@@ -32,9 +32,5 @@
     ],
     "include": [
         "src"
-    ],
-    "exclude": [
-        "src/db/migrations/*.ts",
-        "src/db/seeds/*.ts"
     ]
 }

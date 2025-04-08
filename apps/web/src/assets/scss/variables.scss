@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+$primary: hsl(183 73% 39%) !default;
+$secondary: hsl(34 95% 70%) !default;
+// $success: #0ea777 !default;
+// $info: #010440 !default;
+// $warning: #ffa400 !default;
+$danger: hsl(0 84% 60%) !default;
+// $grey: #e0e0e0 !default;
+
+$primary-dark: hsl(183 60% 45%) !default;
+$secondary-dark: hsl(34 70% 60%) !default;
+// $success: #0ea777 !default;
+// $info: #010440 !default;
+// $warning: #ffa400 !default;
+$danger-dark: hsl(0 70% 45%) !default;
+// $grey: #e0e0e0 !default;
+
+$body-bg: hsl(174 20% 97%) !default;
+$body-color: hsl(213 30% 20%) !default;
+
+$body-bg-dark: hsl(213 35% 12%) !default;
+$body-color-dark: hsl(213 15% 95%) !default;
+
+$font-family-sans-serif: 'Nunito', sans-serif !default;
+$font-family-base: 'Nunito', sans-serif !default;

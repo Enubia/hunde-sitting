@@ -27,6 +27,46 @@ importers:
         specifier: 2.5.0
         version: 2.5.0
 
+  apps/admin:
+    dependencies:
+      '@hunde-sitting/api-client':
+        specifier: workspace:*
+        version: link:../../packages/api-client
+      '@vueuse/core':
+        specifier: 13.0.0
+        version: 13.0.0(vue@3.5.13(typescript@5.8.3))
+      '@vueuse/nuxt':
+        specifier: 13.0.0
+        version: 13.0.0(magicast@0.3.5)(nuxt@3.16.2(@parcel/watcher@2.5.1)(@types/node@22.14.0)(db0@0.3.1)(eslint@9.24.0(jiti@2.4.2))(ioredis@5.6.0)(lightningcss@1.29.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.39.0)(sass@1.86.3)(terser@5.39.0)(tsx@4.19.3)(typescript@5.8.3)(vite@6.2.5(@types/node@22.14.0)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.86.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))(vue-tsc@2.2.4(typescript@5.8.3))(yaml@2.7.0))(vue@3.5.13(typescript@5.8.3))
+      nuxt:
+        specifier: 3.16.2
+        version: 3.16.2(@parcel/watcher@2.5.1)(@types/node@22.14.0)(db0@0.3.1)(eslint@9.24.0(jiti@2.4.2))(ioredis@5.6.0)(lightningcss@1.29.2)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.39.0)(sass@1.86.3)(terser@5.39.0)(tsx@4.19.3)(typescript@5.8.3)(vite@6.2.5(@types/node@22.14.0)(jiti@2.4.2)(lightningcss@1.29.2)(sass@1.86.3)(terser@5.39.0)(tsx@4.19.3)(yaml@2.7.0))(vue-tsc@2.2.4(typescript@5.8.3))(yaml@2.7.0)
+      vue:
+        specifier: 3.5.13
+        version: 3.5.13(typescript@5.8.3)
+      vue-router:
+        specifier: 4.5.0
+        version: 4.5.0(vue@3.5.13(typescript@5.8.3))
+    devDependencies:
+      '@bootstrap-vue-next/nuxt':
+        specifier: 0.28.3
+        version: 0.28.3(bootstrap-vue-next@0.28.3(@vueuse/core@13.0.0(vue@3.5.13(typescript@5.8.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3)))(magicast@0.3.5)
+      '@iconify-json/radix-icons':
+        specifier: 1.2.2
+        version: 1.2.2
+      '@iconify/vue':
+        specifier: 4.3.0
+        version: 4.3.0(vue@3.5.13(typescript@5.8.3))
+      bootstrap:
+        specifier: 5.3.5
+        version: 5.3.5(@popperjs/core@2.11.8)
+      bootstrap-vue-next:
+        specifier: 0.28.3
+        version: 0.28.3(@vueuse/core@13.0.0(vue@3.5.13(typescript@5.8.3)))(vue-router@4.5.0(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))
+      sass:
+        specifier: 1.86.3
+        version: 1.86.3
+
   apps/api:
     dependencies:
       '@hono/node-server':

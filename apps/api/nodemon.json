@@ -1,6 +1,8 @@
 {
     "ignore": [
         ".turbo",
+        "@types",
+        "logs",
         "dist"
     ],
     "ext": "ts",

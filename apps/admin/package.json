@@ -1,0 +1,31 @@
+{
+    "name": "@hunde-sitting/admin",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "build": "nuxt build",
+        "check-types": "nuxi typecheck",
+        "clean": "rm -rf .nuxt .output",
+        "dev": "nuxt dev",
+        "generate": "nuxt generate",
+        "lint": "eslint -c ../../eslint.config.mjs .",
+        "preview": "nuxt preview",
+        "postinstall": "nuxt prepare"
+    },
+    "dependencies": {
+        "@hunde-sitting/api-client": "workspace:*",
+        "@vueuse/core": "13.0.0",
+        "@vueuse/nuxt": "13.0.0",
+        "nuxt": "3.16.2",
+        "vue": "3.5.13",
+        "vue-router": "4.5.0"
+    },
+    "devDependencies": {
+        "@bootstrap-vue-next/nuxt": "0.28.3",
+        "@iconify-json/radix-icons": "1.2.2",
+        "@iconify/vue": "4.3.0",
+        "bootstrap": "5.3.5",
+        "bootstrap-vue-next": "0.28.3",
+        "sass": "1.86.3"
+    }
+}
