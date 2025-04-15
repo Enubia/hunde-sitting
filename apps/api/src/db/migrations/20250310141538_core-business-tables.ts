@@ -5,7 +5,6 @@ import { sql } from 'kysely';
 export async function up(db: Kysely<any>): Promise<void> {
     // #region types
 
-    // mixed breeds are unknown size
     await sql`
         CREATE TYPE auth_provider AS ENUM ('google', 'facebook', 'apple');
         CREATE TYPE user_type AS ENUM ('admin', 'reviewer');
@@ -254,6 +253,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
     await db.schema.createIndex('idx_email_verification_tokens_token').on('email_verification_tokens').columns(['token']).execute();
     await db.schema.createIndex('idx_email_verification_tokens_user_id').on('email_verification_tokens').column('user_id').execute();
+
     await db.schema.createIndex('idx_oauth_user_id').on('oauth_accounts').columns(['user_id']).execute();
     await db.schema.createIndex('idx_oauth_provider').on('oauth_accounts').column('provider').execute();
 
@@ -266,6 +266,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
     await db.schema.createIndex('idx_sitter_breed_specialties_sitter_id').on('sitter_breed_specialties').column('sitter_id').execute();
     await db.schema.createIndex('idx_sitter_breed_specialties_breed_id').on('sitter_breed_specialties').column('breed_id').execute();
+
     await db.schema.createIndex('idx_dogs_owner_id').on('dogs').column('owner_id').execute();
 
     await db.schema.createIndex('idx_bookings_client_id').on('bookings').column('client_id').execute();
@@ -287,40 +288,28 @@ export async function up(db: Kysely<any>): Promise<void> {
 
 export async function down(db: Kysely<any>): Promise<void> {
     await db.schema.dropIndex('idx_unavailable_dates_sitter_id').ifExists().execute();
-
     await db.schema.dropIndex('idx_availability_sitter_id').ifExists().execute();
-
     await db.schema.dropIndex('idx_reviews_sitter_id').ifExists().execute();
     await db.schema.dropIndex('idx_reviews_reviewer_id').ifExists().execute();
-
     await db.schema.dropIndex('idx_bookings_sitter_dates').ifExists().execute();
     await db.schema.dropIndex('idx_bookings_status').ifExists().execute();
     await db.schema.dropIndex('idx_bookings_canceled_by').ifExists().execute();
     await db.schema.dropIndex('idx_bookings_service_id').ifExists().execute();
     await db.schema.dropIndex('idx_bookings_sitter_id').ifExists().execute();
     await db.schema.dropIndex('idx_bookings_client_id').ifExists().execute();
-
     await db.schema.dropIndex('idx_dogs_owner_id').ifExists().execute();
-
     await db.schema.dropIndex('idx_sitter_breed_specialties_breed_id').ifExists().execute();
     await db.schema.dropIndex('idx_sitter_breed_specialties_sitter_id').ifExists().execute();
-
     await db.schema.dropIndex('idx_sitter_services_service_name').ifExists().execute();
     await db.schema.dropIndex('idx_sitter_services_sitter_id').ifExists().execute();
-
     await db.schema.dropIndex('idx_sitters_user_id').ifExists().execute();
-
     await db.schema.dropIndex('idx_user_groups_type').ifExists().execute();
-
     await db.schema.dropIndex('idx_oauth_provider').ifExists().execute();
     await db.schema.dropIndex('idx_oauth_user_id').ifExists().execute();
-
     await db.schema.dropIndex('idx_email_verification_tokens_user_id').ifExists().execute();
     await db.schema.dropIndex('idx_email_verification_tokens_token').ifExists().execute();
-
     await db.schema.dropIndex('idx_registration_data_location').ifExists().execute();
     await db.schema.dropIndex('idx_registration_data_user_id').ifExists().execute();
-
     await db.schema.dropIndex('idx_users_email').ifExists().execute();
 
     await db.schema.dropTable('unavailable_dates').ifExists().execute();
