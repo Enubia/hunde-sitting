@@ -71,10 +71,10 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: 1.14.0
-        version: 1.14.0(hono@4.7.5)
+        version: 1.14.0(hono@4.7.8)
       '@hono/zod-validator':
         specifier: 0.4.3
-        version: 0.4.3(hono@4.7.5)(zod@3.24.2)
+        version: 0.4.3(hono@4.7.8)(zod@3.24.2)
       chalk:
         specifier: 5.4.1
         version: 5.4.1
@@ -82,8 +82,8 @@ importers:
         specifier: 16.4.7
         version: 16.4.7
       hono:
-        specifier: 4.7.5
-        version: 4.7.5
+        specifier: 4.7.8
+        version: 4.7.8
       inversify:
         specifier: 7.5.0
         version: 7.5.0(reflect-metadata@0.2.2)
@@ -177,8 +177,8 @@ importers:
   packages/api-client:
     dependencies:
       hono:
-        specifier: 4.7.5
-        version: 4.7.5
+        specifier: 4.7.8
+        version: 4.7.8
     devDependencies:
       '@hunde-sitting/api':
         specifier: workspace:*
@@ -2709,8 +2709,8 @@ packages:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
 
-  hono@4.7.5:
-    resolution: {integrity: sha512-fDOK5W2C1vZACsgLONigdZTRZxuBqFtcKh7bUQ5cVSbwI2RWjloJDcgFOVzbQrlI6pCmhlTsVYZ7zpLj4m4qMQ==}
+  hono@4.7.8:
+    resolution: {integrity: sha512-PCibtFdxa7/Ldud9yddl1G81GjYaeMYYTq4ywSaNsYbB1Lug4mwtOMJf2WXykL0pntYwmpRJeOI3NmoDgD+Jxw==}
     engines: {node: '>=16.9.0'}
 
   hookable@5.5.3:
@@ -5468,13 +5468,13 @@ snapshots:
 
   '@faker-js/faker@9.6.0': {}
 
-  '@hono/node-server@1.14.0(hono@4.7.5)':
+  '@hono/node-server@1.14.0(hono@4.7.8)':
     dependencies:
-      hono: 4.7.5
+      hono: 4.7.8
 
-  '@hono/zod-validator@0.4.3(hono@4.7.5)(zod@3.24.2)':
+  '@hono/zod-validator@0.4.3(hono@4.7.8)(zod@3.24.2)':
     dependencies:
-      hono: 4.7.5
+      hono: 4.7.8
       zod: 3.24.2
 
   '@humanfs/core@0.19.1': {}
@@ -7810,7 +7810,7 @@ snapshots:
   he@1.2.0:
     optional: true
 
-  hono@4.7.5: {}
+  hono@4.7.8: {}
 
   hookable@5.5.3: {}
 
