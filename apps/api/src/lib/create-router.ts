@@ -1,4 +1,4 @@
-import type { AppEnv } from '#shared/types/index.js';
+import type { AppEnv } from '#shared/types/appenv.js';
 
 import { Hono } from 'hono';
 

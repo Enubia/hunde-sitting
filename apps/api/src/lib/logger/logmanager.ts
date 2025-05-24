@@ -136,6 +136,11 @@ export default class LogManager {
             return;
         }
 
+        if (config.LOG_CONSOLE) {
+            // eslint-disable-next-line no-console
+            return console.log(message, ...args);
+        }
+
         this._fileLogger.log(message, ...args);
     }
 
@@ -146,7 +151,7 @@ export default class LogManager {
     ) {
         const timeStamp = `[${new Date().toISOString()}]`;
 
-        const message = `${timeStamp}${prefix === '' ? ` ${prefix} ` : ' '}log.${level.toUpperCase()}: ${logMessage}`;
+        const message = `${timeStamp}${prefix !== '' ? ` ${prefix} ` : ' '}log.${level.toUpperCase()}: ${logMessage}`;
 
         return this.applyColors(message, level);
     }

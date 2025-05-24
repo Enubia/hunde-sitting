@@ -10,6 +10,7 @@ const zodEnv = z.object({
     // Server
     PORT: z.number({ coerce: true }).default(3000),
     LOG_LEVEL: z.enum(logLevels).default('debug'),
+    LOG_CONSOLE: z.boolean({ coerce: true }).default(false),
     NODE_ENV: z.enum(nodeEnv).default('development'),
 
     // Database

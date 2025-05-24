@@ -249,7 +249,10 @@ export async function up(db: Kysely<any>): Promise<void> {
     await db.schema.createIndex('idx_users_email').on('users').column('email').execute();
 
     await db.schema.createIndex('idx_registration_data_user_id').on('registration_data').column('user_id').execute();
-    await db.schema.createIndex('idx_registration_data_location').on('registration_data').columns(['city', 'state', 'postal_code', 'longitude', 'latitude']).execute();
+    await db.schema.createIndex('idx_registration_data_location')
+        .on('registration_data')
+        .columns(['city', 'state', 'postal_code', 'longitude', 'latitude'])
+        .execute();
 
     await db.schema.createIndex('idx_email_verification_tokens_token').on('email_verification_tokens').columns(['token']).execute();
     await db.schema.createIndex('idx_email_verification_tokens_user_id').on('email_verification_tokens').column('user_id').execute();

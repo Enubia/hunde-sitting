@@ -1,7 +1,8 @@
 import { Container } from 'inversify';
 
 import { DatabaseProvider, DatabaseProviderSymbol } from '#db/databaseprovider.js';
-import { DashboardRepository, DashboardRepositorySymbol, DashboardService, DashboardServiceSymbol } from '#routes/admin/dashboard/index.js';
+import { DashboardRepository, DashboardRepositorySymbol } from '#routes/admin/dashboard/repository.js';
+import { DashboardService, DashboardServiceSymbol } from '#routes/admin/dashboard/service.js';
 
 import CacheService, { CacheServiceSymbol } from './cacheservice.js';
 

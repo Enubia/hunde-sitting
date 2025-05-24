@@ -11,19 +11,17 @@ export default function createApp(logManager: LogManager) {
     const app = createRouter();
 
     app
-        // add request id to the context
         .use((c, next) => requestId({ generator: generateRequestId(c), headerName: 'x-request-identifier' })(c, next))
-        // setup logging and also log request timing after the request is done
         .use(async (c, next) => {
             const startTime = Date.now();
             const connInfo = getConnInfo(c);
             const logFunctions = logManager.buildRequestLogger(c.get('requestId'));
 
-            // can be passed into the services methods
             c.set('requestLog', logFunctions);
 
             await next();
 
+            // eslint-disable-next-line style/max-len
             c.get('requestLog').info(`${c.res.status} ${c.req.method} ${preparePath(c)} - took ${Date.now() - startTime}ms ${connInfo.remote.address?.replace('::ffff:', '')}`);
         })
         .notFound((c) => {
