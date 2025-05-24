@@ -8,7 +8,7 @@
         "clean": "rm -rf dist",
         "dev": "tsx watch src/index.ts",
         "lint": "eslint -c ../../eslint.config.mjs .",
-        "check-types": "tsc --noEmit"
+        "typecheck": "tsc --noEmit"
     },
     "dependencies": {
         "hono": "4.7.5"

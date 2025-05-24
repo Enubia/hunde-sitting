@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "build": "nuxt build",
-        "check-types": "nuxi typecheck",
+        "typecheck": "nuxi typecheck",
         "clean": "rm -rf .nuxt .output",
         "dev": "nuxt dev",
         "generate": "nuxt generate",

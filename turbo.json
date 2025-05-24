@@ -11,9 +11,9 @@
                 ".output/**"
             ]
         },
-        "check-types": {
+        "typecheck": {
             "dependsOn": [
-                "^check-types"
+                "^typecheck"
             ]
         },
         "clean": {

@@ -1,0 +1,58 @@
+# name: Release
+
+# on:
+#   push:
+#     tags:
+#       - "v*"
+#   workflow_dispatch:
+
+# jobs:
+#   release-windows:
+#     runs-on: windows-latest
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - uses: pnpm/action-setup@v2
+#         with:
+#           version: latest
+
+#       - uses: actions/setup-node@v4
+#         with:
+#           node-version: 22.15.0
+
+#       - name: install dependencies
+#         working-directory: ./app
+#         run: pnpm install --frozen-lockfile
+
+#       - name: release artifacts
+#         working-directory: ./app
+#         env:
+#           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: pnpm build:release
+  
+#   release-mac:
+#     needs: release-windows
+
+#     runs-on: macos-latest
+
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - uses: pnpm/action-setup@v2
+#         with:
+#           version: latest
+
+#       - uses: actions/setup-node@v4
+#         with:
+#           node-version: 22.15.0
+
+#       - name: install dependencies
+#         working-directory: ./app
+#         run: pnpm install --frozen-lockfile
+
+#       - name: release artifacts
+#         working-directory: ./app
+#         env:
+#           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         run: pnpm build:release

@@ -20,7 +20,7 @@
         "seed": "pnpm exec kysely seed",
         "lint": "eslint -c ../../eslint.config.mjs .",
         "start": "node dist/index.js",
-        "check-types": "tsc --noEmit"
+        "typecheck": "tsc --noEmit"
     },
     "dependencies": {
         "@hono/node-server": "1.14.0",
