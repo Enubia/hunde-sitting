@@ -1,4 +1,7 @@
 import antfu from '@antfu/eslint-config';
+import { FlatCompat } from '@eslint/eslintrc';
+
+const compat = new FlatCompat();
 
 export default antfu(
     {
@@ -20,10 +23,10 @@ export default antfu(
     {
         rules: {
             'antfu/no-top-level-await': ['off'],
+            'style/max-len': ['error', 150],
             curly: ['error', 'all'],
             'import/order': 'off',
             'no-console': ['warn', { allow: ['warn', 'error'] }],
-            'node/no-process-env': ['error'],
             'node/prefer-global/process': 'off',
             'perfectionist/sort-imports': ['error', {
                 ignoreCase: true,
@@ -77,6 +80,13 @@ export default antfu(
         },
     },
     {
+        files: ['packages/**/*.{ts,vue}', '**/*.json'],
+
+        rules: {
+            'style/max-len': 'off',
+        },
+    },
+    {
         files: ['**/migrations/**', '**/seeds/**', '**/logger*'],
 
         rules: {
@@ -92,4 +102,16 @@ export default antfu(
             'no-var': 'off',
         },
     },
+    ...compat.config({
+        extends: ['plugin:tailwindcss/recommended'],
+
+        rules: {
+            'tailwindcss/no-custom-classname': 'off',
+        },
+
+        ignorePatterns: [
+            '.vscode',
+            'node_modules',
+        ],
+    }),
 );

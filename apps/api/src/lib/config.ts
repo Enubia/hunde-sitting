@@ -25,7 +25,6 @@ let schema: z.infer<typeof zodEnv>;
 function getEnv() {
     try {
         if (!schema) {
-            // eslint-disable-next-line node/no-process-env
             schema = zodEnv.parse(process.env);
         }
 
